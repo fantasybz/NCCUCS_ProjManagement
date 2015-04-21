@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>購物車情境實作-Product</title>
+    <meta name="generator" content="Bootply"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="../css/styles.css" rel="stylesheet">
+    <link href="../assets/jqueryui/css/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+    <link href="../assets/jqGrid/css/ui.jqgrid.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NCCUCS SAASLab Project Management</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="../projectman/project.html">專案資料管理</a></li>
+                <li><a href="../projectman/project.html">需求資料管理</a></li>
+                <li><a href="../projectman/project.html">軟體設計文件管理(SDD)</a></li>
+                <li><a href="../projectman/project.html">軟體測試計劃管理(STP)</a></li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="Search...">
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+
+<div class="row row-offcanvas row-offcanvas-left">
+
+<div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+    <br>
+
+    <ul class="nav nav-sidebar">
+        <span class="label label-success">專案需求管理情境</span>
+        <li><a href="../projectman/project.html">[專案管理-Project]</a></li>
+        <li><a href="../projectman/project.html">[需求管理-Requirement]</a></li>
+        <li><a href="../projectman/project.html">[軟體設計文件管理-SDD]</a></li>
+        <li><a href="../projectman/project.html">[軟體測試計劃管理-STP]</a></li>
+    </ul>
+
+
+    <ul class="nav nav-sidebar">
+        <span class="label label-warning">購物車情境實作</span>
+        <li><a href="./product.html">Product</a></li>
+        <li><a href="./order.html">Order</a></li>
+        <li><a href="./customobject.html">CustomObject</a></li>
+    </ul>
+
+
+</div>
+<!--/span-->
+
+<style>
+    #dialog label, #dialog input {
+        display: block;
+    }
+
+    #dialog label {
+        margin-top: 0.5em;
+    }
+
+    #dialog input, #dialog textarea {
+        width: 95%;
+    }
+
+    .no-close .ui-dialog-titlebar-close {
+        display: none
+    }
+
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        position: relative;
+        margin: 0em;
+        padding: 0;
+        /*overflow: auto;*/
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: left;
+    }
+</style>
+
+
+<input type="hidden" id="userId" name="userId" value="2">
+<input type="hidden" id="tenantId" name="tenantId" value="2">
+
+<div class="col-sm-9 col-md-10 main">
+
+    <!--
+    <form action="<?php// echo JRoute::_('index.php?option=com_store'); ?>" method="post" name="adminForm">
+        <table class="adminlist">
+            <thead><?php //echo $this->loadTemplate('head');?></thead>
+            <tfoot><?php //echo $this->loadTemplate('foot');?></tfoot>
+            <tbody><?php //echo $this->loadTemplate('body');?></tbody>
+        </table>
+        <div>
+            <input type="hidden" name="task" value="" />
+            <input type="hidden" name="boxchecked" value="0" />
+            <?php //echo JHtml::_('form.token'); ?>
+        </div>
+    </form>
+    -->
+    <h1 id="hTname"></h1>
+    <hr>
+
+    <div>
+
+        <div>
+            <table id="list4"></table>
+        </div>
+
+
+        <div id="dialog-form" title="">
+            <table id="list5"></table>
+        </div>
+    </div>
+
+    <!--/.container-->
+</div>
+<footer>
+    <p class="pull-right">©2014 Company</p>
+</footer>
+
+<!-- script references -->
+
+
+<script src="..//assets/jqueryui/js/jquery-1.9.1.js"></script>
+<script src="../assets/jqueryui/js/jquery-ui-1.10.3.custom.min.js"></script>
+<script src="../assets/jqGrid/js/i18n/grid.locale-en.js"></script>
+<script src="../assets/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>-->
+<script src="../js/bootstrap.min.js"></script>
+<!--<script src="../js/scripts.js"></script>-->
+<!--<script src="../js/angular.min.js"></script>-->
+<script type="text/javascript">
+
+
+    jQuery.noConflict();
+    (function ($) {
+        $(function () {
+
+            var userUrl = 'http://localhost:8080/MTAServiceResful/u?uid=' + $("#userId").val();
+            $.when(jQuery.ajax({
+                type: "GET",
+                url: userUrl,
+                cache: false,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    $("#tenantId").val(data.tenantId);
+                    $("#hTname").text(data.tenantName);
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            })).done(function (a1) {
+
+                var olistUrl2 = 'http://localhost:8080/MTAServiceResful/olist?tid=' + $("#tenantId").val();
+                jQuery("#list4").jqGrid({
+                    url: olistUrl2,
+                    datatype: "jsonp",
+                    jsonReader: {
+                        repeatitems: false
+                    },
+                    height: 350,
+                    colNames: ['Order Id', 'Customer', 'Order Date' , "Amount"],
+                    colModel: [
+                        {name: 'orderId', index: 'orderId', width: 160},
+                        {name: 'customer', index: 'customer', width: 150},
+                        {name: 'orderDate', index: 'orderDate', width: 150},
+                        {name: 'orderAmount', index: 'orderAmount', width: 80}
+                    ],
+                    caption: "Order",
+                    ondblClickRow: function (id) {
+                        var rowData = jQuery("#list4").jqGrid('getRowData', id);
+                        openForm(rowData['orderId']);
+                    }
+
+                });
+            })
+
+
+            jQuery('#dialog-form').dialog({
+                autoOpen: false,
+                dialogClass: 'no-close',
+                height: 500,
+                width: 500,
+                modal: false,
+                buttons: {
+                    "OK": function () {
+                        $(this).dialog("close");
+                    },
+                    "Cancel": function () {
+                        $(this).dialog("close");
+                    }
+
+                }
+            });
+
+
+            function openForm(arg) {
+
+                $("#dialog-form").dialog("open");
+                //jQuery("#list5").empty();
+                //jQuery("#list5").jqGrid('clearGridData');
+                var odurl = 'http://localhost:8080/MTAServiceResful/od?tid=' + $("#tenantId").val() + '&oid=' + arg;
+                jQuery("#list5").jqGrid({
+                    url: odurl,
+                    datatype: "jsonp",
+                    jsonReader: {
+                        repeatitems: false
+                    },
+                    colNames: ['Item Id', 'Prodcut Name', 'UnitPrice', 'Qty', 'SubTotal'],
+                    colModel: [
+                        {name: 'orderLineitemId', index: 'orderLineitemId', width: 120},
+                        {name: 'productName', index: 'productName', width: 140},
+                        {name: 'unitPrice', index: 'unitPrice', width: 100},
+                        {name: 'qty', index: 'qty', width: 50},
+                        {name: 'subTotal', index: 'subTotal', width: 60}
+                    ],
+                    height: 350,
+                    caption: "Order Lineitem"
+
+                });
+
+            }
+
+        });
+    })(jQuery);
+
+
+</script>
+</body>
+</html>

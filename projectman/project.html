@@ -1,0 +1,3700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>專案管理情境實作-Product</title>
+    <meta name="generator" content="Bootply"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="../css/styles.css" rel="stylesheet">
+    <link href="../assets/jqueryui/css/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+    <link href="../assets/jqGrid/css/ui.jqgrid.css" rel="stylesheet">
+
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NCCUCS SAASLab Project Management</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="./project.html">專案資料管理</a></li>
+                <li><a href="#">[需求資料管理]</a></li>
+                <li><a href="#">[軟體設計文件管理(SDD)]</a></li>
+                <li><a href="#">[軟體測試計劃管理(STP)]</a></li>
+                <li><a href="#">[軟體測試計劃管理(STP)]</a></li>
+                <li><a href="./TraceProject.html">[專案資料追溯]</a></li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="Search...">
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+
+<div class="row row-offcanvas row-offcanvas-left">
+
+<div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+
+    <br>
+
+
+    <ul class="nav nav-sidebar"><span class="label label-success">Angular.js UI</span>
+        <li><a href="../MTAUIComponents/viewdata.html">[View Data]</a></li>
+
+
+    </ul>
+
+    <ul class="nav nav-sidebar"><span class="label label-success">專案需求管理情境</span>
+        <li><a href="./project.html">[專案管理-Project]</a></li>
+        <li><a href="./project.html">[需求管理-Requirement]</a></li>
+        <li><a href="./project.html">[軟體設計文件管理-SDD]</a></li>
+        <li><a href="./project.html">[軟體測試計劃管理-STP]</a></li>
+        <li><a href="./TraceProject.html">[專案資料追溯]</a></li>
+        <li><a href="./customobject.html">[客製化領域物件]</a></li>
+
+    </ul>
+
+
+    <ul class="nav nav-sidebar"><span class="label label-warning">購物車情境實作</span>
+
+        <li><a href="../shoopingmall/product.html">Product</a></li>
+        <li><a href="../shoopingmall/order.html">Order</a></li>
+        <li><a href="../shoopingmall/customobject.html">CustomObject</a></li>
+    </ul>
+
+
+</div>
+<!--/span-->
+
+<style>
+
+    body {
+        font-family: "微軟正黑體", Arial, Verdana !important;
+    }
+
+    #dialog label, #dialog input {
+        display: block;
+    }
+
+    #dialog label {
+        margin-top: 0.5em;
+    }
+
+    #dialog input, #dialog textarea {
+        width: 95%;
+    }
+
+    .no-close .ui-dialog-titlebar-close {
+        display: none
+    }
+
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        position: relative;
+        margin: 0em;
+        padding: 0;
+        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: left;
+
+    }
+
+    .ui-jqgrid .ui-jqgrid-view {
+        font-size: 14px;
+        font-family: "微軟正黑體", Arial, Verdana !important;;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable th {
+
+        height: 30px;
+    }
+
+    /* .ui-jqgrid tr.jqgrow td {
+         height: 28px !important;
+     }*/
+
+    .ui-jqgrid tr.jqgrow td {
+        word-wrap: break-word; /* IE 5.5+ and CSS3 */
+        white-space: pre-wrap; /* CSS3 */
+        white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+        white-space: -pre-wrap; /* Opera 4-6 */
+        white-space: -o-pre-wrap; /* Opera 7 */
+        overflow: hidden;
+        height: auto;
+        vertical-align: middle;
+        padding-top: 3px;
+        padding-bottom: 3px
+    }
+
+    .customField {
+        background: #d6e9c6;
+    }
+
+    .relationField {
+        background: #5bc0de;
+    }
+
+
+</style>
+
+
+<input type="hidden" id="userId" name="userId" value="1">
+<input type="hidden" id="tenantId" name="tenantId" value="0">
+<input type="hidden" id="objId" name="objId" value="0">
+<input type="hidden" id="coPkVal" name="coPkVal" value="0">
+<input type="hidden" id="coReqPkVal" name="coReqPkVal" value="0">
+<input type="hidden" id="coSddPkVal" name="coSddPkVal" value="0">
+<input type="hidden" id="coStpPkVal" name="coStpPkVal" value="0">
+
+
+<input type="hidden" id="currentRowIndex" name="currentRowIndex" value="0">
+
+<div class="col-sm-9 col-md-10 main">
+
+<h1 id="hTname"></h1>
+
+<h2>請選擇多租戶使用者:<select id="tenant-user-select" class="form-control input-lg"></select></h2>
+<hr>
+
+<div id="project-toolbar" class="panel panel-warning">
+    <div class="panel-heading">
+        <h3 class="panel-title">專案資訊(Project)</h3>
+    </div>
+    <div class="panel-body">
+            <span id="toolbar">
+
+                <button id="refreshPrjGrid" class="btn btn-success"><span
+                        class="glyphicon glyphicon-refresh">更新專案列表</span></button>
+
+                <button id="pAdd" class="btn btn-info"><span class="glyphicon glyphicon glyphicon-plus"></span>新增專案
+                </button>
+                <button id="pEdit" class="btn btn-info"><span class="glyphicon glyphicon glyphicon-cog"></span>客製化專案欄位
+                </button>
+                <!--<button id="btnRel" class="btn btn-info" type="button"><span class="glyphicon glyphicon-star"></span>Edit
+                    Relationships
+                </button>-->
+            </span>
+
+        <p></p>
+
+
+        <table id="list4"></table>
+    </div>
+</div>
+<div id="requirement-toolbar" class="panel panel-success" style="display: none;">
+    <div class="panel-heading">
+        <h3 class="panel-title">專案需求項目資訊(Requirement)</h3>
+    </div>
+    <div class="panel-body">
+
+
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+                <h3>
+                    <span>目前選擇專案 : </span>
+                    <span id="current-select-projectname" class="label label-warning">XX專案</span>
+                </h3>
+            </div>
+        </div>
+
+
+        <input id="current-select-projectid" type="hidden" value=""/>
+            <span>
+
+                <button id="refreshReqGrid" class="btn btn-success"><span
+                        class="glyphicon glyphicon-refresh">更新需求列表</span></button>
+
+                <button id="reqAdd" class="btn btn-success"><span class="glyphicon glyphicon-plus">新增需求項目</span>
+                </button>
+
+                <button id="reqCustFields" class="btn btn-success"><span class="glyphicon glyphicon-cog">客製化需求欄位</span>
+                </button>
+
+            </span>
+
+        <p></p>
+        <table id="requirementlistgrid"></table>
+    </div>
+</div>
+
+<div id="sdd-toolbar" class="panel panel-info" style="display: none;">
+    <div class="panel-heading">
+        <h3 class="panel-title">軟體設計文件資訊(SoftwareDesignDocument)</h3>
+    </div>
+    <div class="panel-body">
+
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+                <h3>
+                    <span>目前選擇需求項目 :</span>
+                    <span id="sdd-select-reqDesc" class="label label-warning"
+                          Style="margin-bottom:5px;margin-top:5px;margin-right:5px;text-align: left; display:block;">XX專案</span>
+                    <span id="sdd-select-reqType" class="label label-warning">XX專案</span>
+                    <input id="sdd-select-reqId" type="hidden" value=""/>
+                </h3>
+            </div>
+        </div>
+
+
+
+            <span>
+
+                <button id="refreshSddGrid" class="btn btn-info"><span class="glyphicon glyphicon-refresh"></span>更新SDD列表
+                </button>
+
+                <button id="sddAdd" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span>新增SDD項目</button>
+
+                <button id="sddCustFields" class="btn btn-info"><span class="glyphicon glyphicon-cog"></span>客製化SDD欄位
+                </button>
+
+            </span>
+
+        <p></p>
+        <table id="sddlistgrid"></table>
+    </div>
+</div>
+
+<div id="stp-toolbar" class="panel panel-primary" style="display: none;">
+    <div class="panel-heading">
+        <h3 class="panel-title">軟體測試計劃(SoftwareTestPlan)</h3>
+    </div>
+    <div class="panel-body">
+
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+                <h3>
+                    <span>目前選擇需求項目 :</span>
+                    <span id="stp-select-sddDesc" class="label label-primary"
+                          Style="margin-bottom:5px;margin-top:5px;margin-right:5px;text-align: left;display:block;">XX專案</span>
+
+                </h3>
+
+                <input id="stp-select-reqId" type="hidden" value=""/>
+                <input id="stp-select-sddId" type="hidden" value=""/>
+            </div>
+        </div>
+
+            <span>
+
+                <button id="refreshSTPGrid" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span>
+                    更新STP列表
+                </button>
+
+                <button id="stpAdd" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> 新增STP項目
+                </button>
+
+                <button id="stpCustFields" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span>
+                    客製化STP欄位
+                </button>
+
+            </span>
+
+        <p></p>
+        <table id="stplistgrid"></table>
+    </div>
+</div>
+
+
+<!-- dialog-form 區載-->
+
+<div id="dialog-form" title="編輯專案(Project)資訊">
+    <div>
+        <table id="projectView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidProject" name="hidProject" value=""/>
+    </div>
+</div>
+
+<div id="requirement-dialog-form" title="編輯需求(Requirement)資訊">
+    <div>
+        <table id="requirementView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidRequirement" name="hidRequirement" value=""/>
+    </div>
+</div>
+
+<div id="sdd-dialog-form" title="編輯軟體設計文件(SDD)資訊">
+    <div>
+        <table id="sddView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidSDD" name="hidSDD" value=""/>
+    </div>
+</div>
+
+
+<div id="stp-dialog-form" title="編輯軟體測試計劃(STP)資訊">
+    <div>
+        <table id="stpView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidSTP" name="hidSTP" value=""/>
+    </div>
+</div>
+
+
+<div id="dialog-form2" title="客製化專案欄位">
+    <button id="fAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="productSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="requirement-schema-dialog-form" title="客製化需求欄位">
+    <button id="reqfAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="requirementSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="sdd-schema-dialog-form" title="客製化SDD欄位">
+    <button id="sddfAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="sddSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="stp-schema-dialog-form" title="客製化STP欄位">
+    <button id="stpfAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="stpSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="dialogRel" title="Custom Relationship">
+    <table id="rellist">
+    </table>
+</div>
+
+
+<div id="relation" title="Custom Relationships">
+
+    <table id="relationlist"></table>
+
+</div>
+
+
+<div id="dialogRichtext" title="Rich Text Editor">
+
+    <textarea name="pRichText" id="pRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>
+
+<div id="reqdialogRichtext" title="Rich Text Editor">
+
+    <textarea name="reqRichText" id="reqRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>
+
+
+<div id="sdddialogRichtext" title="Rich Text Editor">
+
+    <textarea name="sddRichText" id="sddRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>
+
+<div id="stpdialogRichtext" title="Rich Text Editor">
+
+    <textarea name="stpRichText" id="stpRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>
+
+
+</div>
+
+<!--/row-->
+</div>
+</div>
+<!--/.container-->
+
+<footer>
+    <p class="pull-right">©2014 Company</p>
+</footer>
+
+<div id="domMessage" style="display:none;">
+    <h3>載入多租戶資訊 請稍後....</h3>
+</div>
+
+<!-- script references -->
+<script src="../assets/jqueryui/js/jquery-1.9.1.js"></script>
+<script src="../assets/jqueryui/js/jquery-ui-1.10.3.custom.js"></script>
+<script src="../assets/jqGrid/js/i18n/grid.locale-en.js"></script>
+<script src="../assets/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+
+<script src="../assets/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+<script src="../js/jquery.blockUI.js"></script>
+
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>-->
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/underscore.js"></script>
+<script src="../js/encoder.js"></script>
+
+<script type="text/javascript">
+tinyMCE.init({
+    // General
+    directionality: "ltr",
+    editor_selector: "mce_editable",
+    language: "en",
+    mode: "specific_textareas",
+    skin: "default",
+    theme: "advanced",
+    // Cleanup/Output
+    inline_styles: true,
+    gecko_spellcheck: true,
+    entity_encoding: "raw",
+    extended_valid_elements: "hr[id|title|alt|class|width|size|noshade|style],img[class|src|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style],a[id|class|name|href|hreflang|target|title|onclick|rel|style]",
+    force_br_newlines: false, force_p_newlines: true, forced_root_block: "p",
+    invalid_elements: "script,applet,iframe",
+    // URL
+    relative_urls: false,
+    remove_script_host: false,
+    document_base_url: "",
+    // Layout
+    content_css: "css/editor.css",
+    // Advanced theme
+    theme_advanced_toolbar_location: "top",
+    theme_advanced_toolbar_align: "left",
+    theme_advanced_source_editor_height: "550",
+    theme_advanced_source_editor_width: "750",
+    theme_advanced_resizing: true,
+    theme_advanced_resize_horizontal: false,
+    theme_advanced_statusbar_location: "bottom", theme_advanced_path: true
+});
+jQuery.noConflict();
+(function ($) {
+    $(function () {
+
+        $(document).ajaxStop($.unblockUI);
+
+        $.blockUI({ message: $('#domMessage') });
+
+        var userlistUrl = 'http://localhost:8080/MTAServiceResful/ulist';
+
+        $.ajax({
+            type: "GET",
+            url: userlistUrl,
+            cache: false,
+            dataType: 'jsonp',
+            jsonpCallback: 'processData',
+            success: function (data) {
+                $("#tenant-user-select").empty();
+
+                $.each(data, function (index, item) {
+                    $("#tenant-user-select").append('<option value = "' + item.id + '">' + item.tenantName + '</option>');
+
+                });
+
+                $("#userId").val($("#tenant-user-select").val());
+                loadTenantUserPrj();
+
+
+            }, error: function (jqXHR, exception) {
+                if (jqXHR.status === 0) {
+                    alert('Not connect.\n Verify Network.');
+                } else if (jqXHR.status == 404) {
+                    alert('Requested page not found. [404]');
+                } else if (jqXHR.status == 500) {
+                    alert('Internal Server Error [500].');
+                } else if (exception === 'parsererror') {
+                    alert('Requested JSON parse failed.');
+                } else if (exception === 'timeout') {
+                    alert('Time out error.');
+                } else if (exception === 'abort') {
+                    alert('Ajax request aborted.');
+                } else {
+                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                }
+            }
+
+        });
+
+
+        $("#tenant-user-select").on('change', function () {
+            $("#userId").val($(this).val());
+            loadTenantUserPrj();
+        });
+
+
+        function loadTenantUserPrj() {
+            var userUrl = 'http://localhost:8080/MTAServiceResful/u?uid=' + $("#userId").val();
+
+
+            $.when(jQuery.ajax({
+                type: "GET",
+                url: userUrl,
+                cache: false,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    $("#tenantId").val(data.tenantId);
+                    $("#hTname").text(data.tenantName);
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            })).done(function (a1) {
+                getProjectList();
+            });
+
+        }
+
+
+        function applyPrjRowFunc() {
+
+            $("#list4").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //console.log(json);
+
+                    crossDomainPostAfterFunc("http://localhost:8080/MTAServiceResful/deldata", json, false, getProjectList());
+                } else if ($(this).hasClass("load-detail-act")) {
+                    //select project view requirement
+
+                    var projName = $(this).parents("tr").find("td:eq(3)").text();
+                    var projId = $(this).parents("tr").find("td:eq(2)").text();
+
+                    $("#current-select-projectname").text(projName);
+                    $("#current-select-projectid").val(projId);
+
+                    getProjectRequirmentList(projId);
+
+                    $("#requirement-toolbar").fadeIn('400');
+                } else if ($(this).hasClass("edit-row-act")) {
+                    var projId = $(this).parents("tr").find("td:eq(2)").text();
+                    openForm(projId);
+                }
+            });
+        }
+
+        var dialogRel = $("#dialogRel").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            modal: false,
+            width: 500,
+            buttons: {
+                OK: function () {
+                    $(this).dialog("close");
+
+                }
+            },
+            close: function () {
+            }
+        });
+
+        $("#dialog-form").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 400,
+            width: 450,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    saveProject();
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $("#dialog-form2").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 500,
+            width: 500,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    //saveSchema();
+                    saveProjectSchemaAfterFunc(getProjectList)
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+
+            }
+        });
+
+
+        var dialogRel2 = $("#relation").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            modal: false,
+            width: 500,
+            buttons: {
+                "OK": function () {
+                    saveRel();
+                    $(this).dialog("close");
+
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }}
+        });
+
+        $("#refreshPrjGrid").button().click(function () {
+            getProjectList();
+
+        });
+
+        $("#pAdd").button().click(function () {
+            openForm(0);
+        });
+
+        $("#fAdd").button().click(function () {
+            addField();
+        });
+
+        $("#pEdit").button().click(function () {
+            openSchmeaForm();
+        });
+
+
+        /***
+         * 取得專案列表
+         */
+        function getProjectList() {
+
+
+            //clear sub panel
+            $("#requirement-toolbar").fadeOut(400);
+            $("#sdd-toolbar").fadeOut(400);
+            $("#stp-toolbar").fadeOut(400);
+
+
+            $("#project-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#list4 tr:gt(0)").remove();
+            $('#list4').jqGrid('GridUnload')
+
+            var projObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+                            var defaultFields = ['ProjectId', 'ProjectName', 'Unit'];
+                            projObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#list4").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            forceFit: true,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(projObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(projObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";
+                                $(this).setCell(id, "edit", button);
+
+
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        loadProjectObjects();
+
+
+                    });
+
+
+            $("#project-toolbar .panel-body").unblock();
+        }
+
+        function loadProjectObjects() {
+
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/project/prjlist?tid=' + $("#tenantId").val();
+
+            jQuery.ajax({
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.customFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                            }
+
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#list4").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+                    applyPrjRowFunc();
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+        function setRelationValue(field) {
+
+            if (field != null && field.length == 1) {
+                var valarray = _.pluck(field[0].customFields, 'value');
+                return valarray.join("-");
+            } else {
+
+                return "";
+            }
+        }
+
+
+        function setCustomFieldColor(defaultCells, fieldName) {
+
+            var findResult = _.find(defaultCells, function (dfcell) {
+                return dfcell == fieldName;
+            });
+
+
+            if (_.isUndefined(findResult)) {
+
+                return ',"classes":"customField"';
+
+            } else {
+
+
+                return "";
+
+            }
+
+
+        }
+
+        function generateJqGridModel(defaultCells, mtaObjMeta) {
+            var obj = mtaObjMeta;
+            var cnStr = '[';
+            var cmStr = '[';
+
+            $.each(obj.customFields, function (i, item) {
+
+                if (i == 0) {
+
+                    cnStr += '"","objectId",';
+
+                    cmStr += '{"name": "edit", "index": "edit", "align": "center", "sortable": false },';
+                    cmStr += '{"name": "objectId", "index": "objectId", "hidden": true},';
+                }
+
+                if (item.type.value != 5) {
+                    cnStr += '"' + item.name + '",';
+                    cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false' + setCustomFieldColor(defaultCells, item.name) + '},'
+                }
+
+                if (item.type.value == 5) {
+
+                    cnStr += '"' + item.name + '",';
+                    cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"classes":"relationField"},'
+                }
+
+            });
+            cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+            cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+
+            return {colNamesStr: cnStr, colModelStr: cmStr};
+
+        }
+
+
+        //data
+        var relAry;
+
+        function openForm(arg) {
+            $("#coPkVal").val(arg);
+            var pv = $("#projectView");
+            pv.empty();
+            $("<thead><tr><th>Name</th><th>Value</th></tr></thead><tbody>").appendTo(pv);
+            if (arg == 0) {
+
+                var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.id);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.customFields, function (i, item) {
+                            if (item.indexType.value == 1) {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"" + item.name + "\" value=\"\" class=\"text ui-widget-content ui-corner-all\" disabled /></td>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></tr>";
+                            } else {
+                                appendStr += doCustomField(item, i, arg, "Project");
+                            }
+                        });
+                        pv.append($(appendStr));
+
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            } else {
+                var pUrl = 'http://localhost:8080/MTAServiceResful/project/rproj?pid=' + arg + '&tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.objectId);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.customFields, function (i, item) {
+                            if (item.name != 'ProjectId' && item.name != 'ProjectName' && item.name != 'Unit') {
+                                appendStr += doCustomField(item, i, arg, "Project");
+
+                            } else {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                if (item.name == "ProjectId") {
+                                    appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + item.value + "\" class=\"text ui-widget-content ui-corner-all\" disabled/>";
+                                } else {
+                                    appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + item.value + "\" class=\"text ui-widget-content ui-corner-all\" />";
+                                }
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></tr>";
+                            }
+
+                        });
+
+                        pv.append($(appendStr));
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            }
+
+            $("#dialog-form").dialog("open");
+
+        }
+
+        function doCustomField(item, i, arg, objectType) {
+            var appendStr = "";
+            var value = "";
+            if (item.value != null) value = item.value;
+            if (item.type.value == 5) {
+                var ary = item.name.split("_");
+                if (ary[0] != objectType) {
+                    relAry[relAry.length] = item.id;
+                    //console.log(ary[0])
+                    appendStr += "<tr><td><label name=\"fieldName\">" + ary[0] + "</label></td>";
+                    appendStr += "<td>&nbsp;<select name='selCr'></select>";
+                    appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                    if (arg != 0) appendStr += "<button name='btnViewRel' class='btn'>View</button>";
+                    //console.log("Val" + value);
+                    appendStr += "<input type='hidden' name='cfValue' value='" + value + "'>";
+                    appendStr += "<input type='hidden' name='relObjId' value=''>";
+                    appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></tr>";
+                } else {
+                    if (arg != 0) {
+                        appendStr += "<tr><td><label name=\"fieldName\">" + ary[1] + "</label></td>";
+                        appendStr += "<td>";
+                        appendStr += "<button name='btnViewRel' class='btn'>View</button>";
+                        appendStr += "<input type='hidden' name='relObjId' value='" + $("#objId").val() + "'>";
+                        appendStr += "<input type='hidden' name='fieldValue' value='" + value + "'>";
+                        appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></tr>";
+                    }
+                }
+            } else {
+                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                if (item.type.value == 2) {
+                    appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + value + "\" class=\"date-input\" />";
+                } else if (item.type.value == 6) {
+                    appendStr += "<td><input type=\"hidden\" name=\"fieldValue\" value='" + value + "'  /><button name='btnRtEdit' class='btn'>Edit</button>";
+                } else {
+                    appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + value + "\" class=\"text ui-widget-content ui-corner-all\" />";
+                }
+                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></tr>";
+            }
+
+            return appendStr;
+        }
+
+        function doCusRelSelect(activeView) {
+            var rows = $(activeView).find("tr:gt(0)"); // skip the header row
+            var relUrl = 'http://localhost:8080/MTAServiceResful/cr?tid=' + $("#tenantId").val() + "&cid=" + $("#objId").val();
+            var crCo = null;
+            $.when(jQuery.ajax({
+                type: "GET",
+                url: relUrl,
+                cache: false,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    crCo = data;
+                },
+                error: function (jqXHR, exception) {
+                }
+            })).done(function (a1) {
+                doSelOption(activeView, 0, rows, crCo);
+            });
+
+        }
+
+
+        function doSelOption(activeView, i, rows, crCo) {
+            if (i >= relAry.length) {
+                return;
+            }
+
+            var rowIndex = 0;
+            rows.each(function (index) {
+                var cfId = $(this).find("input[name='cfId']").val();
+                ;
+                if (cfId == relAry[i]) rowIndex = index;
+            });
+            //console.log(rowIndex);
+            var scTr = $(activeView).find('tr:eq(' + ( rowIndex + 1) + ')');
+            var objName = (scTr).find("label[name='fieldName']").text();
+            //console.log(objName);
+            var oid = 0;
+            $.each(crCo.customRelationships, function (i, item) {
+                if (item.masterObjectName == objName) {
+                    oid = item.masterObjectId;
+                }
+            });
+            var crVal = $(scTr).find("input[name='cfValue']").val();
+            $(scTr).find("input[name='relObjId']").val(oid);
+
+            //console.log(oid);
+            var sel = $(scTr).find("select[name='selCr']");
+
+            var appendStr = "";
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/colist?tid=' + $("#tenantId").val() + "&oid=" + oid;
+            //console.log(olistUrl);
+            $.when(jQuery.ajax({
+                type: "GET",
+                url: olistUrl,
+                cache: false,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    appendStr += "<option value='0'></option>";
+                    $.each(data, function (i, item) {
+                        //console.log(item.name);
+                        $.each(item.customFields, function (i, field) {
+                            if (field.fieldNum == 1) {
+                                //console.log(field.value);
+                                if (item.pkCustomField.value == crVal) {
+                                    appendStr += "<option value='" + item.pkCustomField.value + "' selected>" + field.value + "</option>";
+                                } else {
+                                    appendStr += "<option value='" + item.pkCustomField.value + "'>" + field.value + "</option>";
+                                }
+                            }
+                        });
+                    });
+
+                },
+                error: function (jqXHR, exception) {
+                }
+            })).done(function (a1) {
+                sel.append($(appendStr));
+                doSelOption(activeView, (i + 1), rows, crCo);
+            });
+
+        }
+
+
+        //shcema
+        function openSchmeaForm() {
+            var pv = $("#productSchema");
+
+            pv.empty();
+            $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
+            var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: pUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    var appendStr = "";
+                    $("#objId").val(data.id);
+                    $.each(data.customFields, function (i, item) {
+
+                        if (item.name == 'ProductId' || item.name == 'ProductName' || item.name == 'UnitPrice') {
+
+                            appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' disabled >";
+                            appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                            appendStr += "<td>";
+
+                            if (item.type.value == 0) {
+                                if (item.indexType.value == 1) {
+                                    appendStr += "<input type='text' name='fieldType' value='label' disabled >";
+                                } else {
+                                    appendStr += "<input type='text' name='fieldType' value='textbox' disabled >";
+                                }
+                            } else {
+                                appendStr += "<input type='text' name='fieldType' value='number textbox' disabled >";
+                            }
+
+                            console.log(item.type.value);
+
+                            appendStr += "<input type='hidden' id='fieldTypeVal' name='fieldTypeVal' value='" + item.type.value + "'>";
+                            appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                        } else {
+
+                            if (item.type.value != 5) {
+                                appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' />";
+                                //appendStr += "<Select  name='fieldName' style='display:none'></select>"
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                                appendStr += "<td><Select id='fieldType' name='fieldType' >";
+
+                                //console.log(item.type.value);
+                                if (item.type.value == 0) {
+                                    appendStr += "<option value='0' selected>textbox</option>";
+                                } else {
+                                    appendStr += "<option value='0'>textbox</option>";
+                                }
+                                if (item.type.value == 1) {
+                                    appendStr += "<option value='1' selected>number textbox</option>";
+                                } else {
+                                    appendStr += "<option value='1'>number textbox</option>";
+                                }
+                                if (item.type.value == 2) {
+                                    appendStr += "<option value='2' selected>date</option>";
+                                } else {
+                                    appendStr += "<option value='2'>date</option>";
+                                }
+
+                                if (item.type.value == 3) {
+                                    appendStr += "<option value='3' selected>image</option>";
+                                } else {
+                                    appendStr += "<option value='3'>image</option>";
+                                }
+
+                                if (item.type.value == 4) {
+                                    appendStr += "<option value='4' selected>label</option>";
+                                } else {
+                                    appendStr += "<option value='4'>label</option>";
+                                }
+
+                                if (item.type.value == 6) {
+                                    appendStr += "<option value='6' selected>rich text</option>";
+                                } else {
+                                    appendStr += "<option value='6'>rich text</option>";
+                                }
+
+                                appendStr += "</Select>";
+                                appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                            }
+                        }
+                    });
+                    pv.append($(appendStr));
+
+                },
+                error: function (jqXHR, exception) {
+                }
+            });
+
+            $("#dialog-form2").dialog("open");
+
+        }
+
+        function addField() {
+            var pv = $("#productSchema");
+            var appendStr = "<tr>";
+            appendStr += "<td><input name='fieldName' type='text'></input></td>";
+            appendStr += "<td><Select id='fieldType' name='fieldType' >";
+            appendStr += "<option value='0'>textbox</option>";
+            appendStr += "<option value='1'>number textbox</option>";
+            appendStr += "<option value='2'>date</option>";
+            appendStr += "<option value='3'>image</option>";
+            appendStr += "<option value='4'>label</option>";
+            appendStr += "<option value='6'>rich text</option>";
+            appendStr += "</Select>";
+            appendStr += "<input type='hidden' id='indexType' name='indexType' value='0'></td></tr>";
+
+            pv.append($(appendStr));
+
+        }
+
+        function saveProject() {
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"coPkVal":"' + $("#coPkVal").val() + '","customFields":[';
+            $("#projectView").find("tbody").find("tr").each(function () {
+                var fieldId = $(this).find('input[name="cfId"]').val();
+                var fieldValue = $(this).find('input[name="fieldValue"]').val();
+                if ($(this).find('input[name="cfType"]').val() == 6) {
+                    fieldValue = JSON.stringify($('<div/>').text(fieldValue).html())
+                    fieldValue = fieldValue.substring(1, fieldValue.length - 1);
+                }
+
+
+                if ($(this).find('input[name="cfType"]').val() == 5) {
+                    fieldValue = $(this).find('select[name="selCr"] option:selected').val();
+                }
+
+                json += '{"id":' + fieldId + ' ,"value":"' + fieldValue + '" },';
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+
+            crossDomainPostAfterFunc("http://localhost:8080/MTAServiceResful/scodata", json, false, getProjectList());
+
+
+        }
+
+        function saveSchema() {
+
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"customFields":[';
+            $("#productSchema").find("tbody").find("tr").each(function () {
+
+                var fieldId = $(this).find('input[name="cfId"]').val();
+                if (fieldId === undefined) fieldId = 0;
+                var fieldName = $(this).find('input[name="fieldName"]').val();
+
+                var fieldType;
+                if (fieldName == 'ProductId' || fieldName == 'ProductName' || fieldName == 'UnitPrice') {
+                    fieldType = $(this).find('input[name="fieldTypeVal"]').val();
+                } else {
+                    fieldType = $(this).find('select[name="fieldType"]').find(":selected").val();
+                }
+                var indexType = $(this).find('input[name="indexType"]').val();
+
+                json += '{"id":' + fieldId + ' ,"name":"' + fieldName + '","type":"' + fieldType + '","indexType":"' + indexType + '"},';
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPost("http://localhost:8080/MTAServiceResful/scf", json, false);
+
+
+        }
+
+        function saveProjectSchemaAfterFunc(afterFunc) {
+
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"customFields":[';
+            $("#productSchema").find("tbody").find("tr").each(function () {
+
+                var fieldId = $(this).find('input[name="cfId"]').val();
+                if (fieldId === undefined) fieldId = 0;
+                var fieldName = $(this).find('input[name="fieldName"]').val();
+
+                var fieldType;
+                if (fieldName == 'ProductId' || fieldName == 'ProductName' || fieldName == 'UnitPrice') {
+                    fieldType = $(this).find('input[name="fieldTypeVal"]').val();
+                } else {
+                    fieldType = $(this).find('select[name="fieldType"]').find(":selected").val();
+                }
+                var indexType = $(this).find('input[name="indexType"]').val();
+
+                json += '{"id":' + fieldId + ' ,"name":"' + fieldName + '","type":"' + fieldType + '","indexType":"' + indexType + '"},';
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPost("http://localhost:8080/MTAServiceResful/scf", json, false);
+            crossDomainPostAfterFunc("http://localhost:8080/MTAServiceResful/scf", json, false, afterFunc)
+
+        }
+
+
+        $("#btnM").click(function () {
+            openSchmeaForm();
+            $('#myModal').modal('show')
+
+        });
+
+        $("#btnRel").click(function () {
+
+            $("#relation").dialog("open");
+
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/comdlist?tid=' + $("#tenantId").val();
+
+            $("#relationlist").jqGrid("setGridParam", { datatype: "jsonp", url: olistUrl }).trigger("reloadGrid");
+        });
+
+        jQuery("#relationlist").jqGrid({
+            url: 'local',
+            datatype: "jsonp",
+            width: 400,
+            height: 350,
+            colNames: ['', 'Id', 'Name'],
+            colModel: [
+                {
+                    name: 'selectedIso', formatter: "checkbox", formatoptions: { disabled: true }, editable: true,
+                    edittype: "checkbox", width: 20
+                },
+                {name: 'id', index: 'id', width: 60, sorttype: "int"},
+                {name: 'name', index: 'name', width: 100}
+            ],
+            caption: "Detail Objects",
+            rowNum: 10,
+            rowList: [10, 20, 30],
+            onSelectRow: function (id, status) {
+                //var rowData = jQuery(this).getRowData(id);
+                var ch = jQuery(this).find('#' + id + ' input[type=checkbox]').prop('checked');
+                if (ch) {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').prop('checked', false);
+                } else {
+                    jQuery(this).find('#' + id + ' input[type=checkbox]').prop('checked', true);
+                }
+                rowChecked = 1;
+                currentrow = id;
+            },
+            loadComplete: function () {
+                var grid = $("#relationlist");
+                var ids = grid.getDataIDs();
+                var userUrl = 'http://localhost:8080/MTAServiceResful/cr?tid=' + $("#tenantId").val() + '&cid=' + $("#objId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: userUrl,
+                    cache: false,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $.each(data.customRelationships, function (i, item) {
+                            for (var j = 0; j < ids.length; j++) {
+                                if (item.detailObjectId == ids[j] && item.detailObjectId != $("#objId").val()) {
+                                    grid.find('#' + ids[j] + ' input[type=checkbox]').prop('checked', true);
+                                    break;
+                                }
+                            }
+                        });
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                })
+
+            }
+
+        });
+
+        function saveRel() {
+
+            var grid = $("#relationlist"), ids = grid.getDataIDs(), val = "";
+            for (var j = 0; j < ids.length; j++) {
+                var cellVal = grid.jqGrid('getCell', ids[j], 1);
+                if (cellVal != 0) {
+                    var ck = grid.find('#' + ids[j] + ' input[type=checkbox]').prop('checked');
+                    if (ck) {
+                        val += cellVal + ",";
+                    }
+                }
+            }
+            val = val.substring(0, val.length - 1);
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"cid":' + $("#objId").val() + ',"coids":"' + val + '"}';
+            //console.log(json);
+            crossDomainPost("http://localhost:8080/MTAServiceResful/scr", json, false);
+
+        }
+
+
+        $('#projectView').on('click', 'input', function () {
+
+            if ($(this).attr("class") == "date-input") {
+                $(this).datepicker('destroy').datepicker({showOn: 'focus', dateFormat: 'yy/mm/dd'}).focus();
+            }
+
+        });
+
+        var dialogRichtext = $("#dialogRichtext").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            modal: false,
+            width: 500,
+            buttons: {
+                OK: function () {
+                    var index = parseInt($("#currentRowIndex").val()) + 1;
+                    var scTr = $('#projectView tr:eq(' + index + ')');
+                    var cfValue = $(scTr).find("input[name='fieldValue']");
+                    $(cfValue).val(tinyMCE.get("pRichText").getContent());
+                    $("#currentRowIndex").val("");
+                    tinyMCE.get("pRichText").setContent("");
+                    $(this).dialog("close");
+
+                }
+            },
+            close: function () {
+            }
+        });
+
+        $("#projectView").on("click", "button", function (e) {
+            e.preventDefault();
+            //console.log($(this).attr("name"));
+            if ($(this).attr("name") == "btnViewRel") {
+                var scTr = $(this).parent().parent();
+                var crVal = $(scTr).find("input[name='cfValue']").val();
+                var oid = $(scTr).find("input[name='relObjId']").val();
+                var cfId = $(scTr).find("input[name='cfId']").val();
+                var isEmpty = true;
+                if (oid == $("#objId").val()) {
+                    console.log("detail");
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    jQuery.ajax({
+                        type: "GET",
+                        url: coDataUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            $.each(data.customFields, function (i, item) {
+
+                                if (item.id == parseInt(cfId) && item.values != null) {
+
+                                    if (typeof  item.values[0] != 'undefined') {
+                                        var title = item.values[0].name;
+                                        var cnStr = '[' , cmStr = '[';
+                                        $.each(item.values[0].customFields, function (i, item) {
+                                            if (item.type.value != 5) {
+                                                cnStr += '"' + item.name + '",';
+                                                cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},'
+                                            }
+                                        });
+                                        isEmpty = false;
+                                        cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                        cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                        jQuery('#rellist').jqGrid("GridUnload");
+                                        jQuery('#rellist').jqGrid({
+                                            jsonReader: { repeatitems: false, cell: "" },
+                                            datatype: 'jsonstring',
+                                            caption: title,
+                                            colNames: jQuery.parseJSON(cnStr),
+                                            colModel: jQuery.parseJSON(cmStr),
+                                            viewrecords: true
+                                        });
+
+                                        $.each(item.values, function (i, co) {
+                                            console.log(i);
+                                            var newRowData = '[{';
+                                            $.each(co.customFields, function (i, field) {
+                                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                                            });
+                                            newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                                            console.log(newRowData);
+                                            $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                                        });
+
+                                    }
+
+                                }
+                            });
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+                    });
+                } else {
+                    console.log("master");
+
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var handleCoData = function () {
+                        jQuery.ajax({
+                            type: "GET",
+                            url: coDataUrl,
+                            dataType: 'jsonp',
+                            jsonpCallback: 'processData',
+                            success: function (data) {
+                                var cnStr = '[' , cmStr = '[';
+                                var newRowData = '[{';
+                                $.each(data.customFields, function (i, item) {
+                                    if (item.type.value != 5) {
+                                        cnStr += '"' + item.name + '",';
+                                        cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},';
+                                        newRowData += '"' + item.name + '":"' + item.value + '",'
+                                    }
+                                });
+                                isEmpty = false;
+                                cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+
+                                jQuery('#rellist').jqGrid("GridUnload");
+                                jQuery('#rellist').jqGrid({
+                                    jsonReader: { repeatitems: false, cell: "" },
+                                    datatype: 'jsonstring',
+                                    caption: data.name,
+                                    colNames: jQuery.parseJSON(cnStr),
+                                    colModel: jQuery.parseJSON(cmStr),
+                                    viewrecords: true
+                                });
+                                $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                            },
+                            error: function (jqXHR, exception) {
+                            }
+                        });
+                    };
+                    if (crVal != "") {
+                        handleCoData();
+                    }
+                }
+
+                if (isEmpty) {
+                    jQuery('#rellist').jqGrid("GridUnload");
+                }
+
+                $("#dialogRel").dialog("open");
+            } else if ($(this).attr("name") == "btnRtEdit") {
+                dialogRichtext.dialog("open");
+                var val = $(this).parent().parent().find("input[name='fieldValue']").val();
+                tinyMCE.get("pRichText").setContent(val);
+                $("#currentRowIndex").val($(this).parent().parent().index());
+            }
+
+        });
+
+
+        /**
+         * 處理Requirement部分
+         */
+
+        $("#reqAdd").button().click(function () {
+            openReqForm(0);
+        });
+
+        $("#refreshReqGrid").button().click(function () {
+            getProjectRequirmentList($("#current-select-projectid").val());
+        });
+
+
+        $("#reqCustFields").button().click(function () {
+            openReqSchmeaForm();
+        })
+
+
+        $("#reqfAdd").button().click(function () {
+            addReqField();
+        });
+
+
+        $("#requirement-schema-dialog-form").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 500,
+            width: 500,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    saveReqSchemaAfterFunc("#requirementSchema", getProjectRequirmentList, $("#current-select-projectid").val());
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+
+            }
+        });
+
+
+        $("#requirement-dialog-form").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 400,
+            width: 450,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    saveRequirement();
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+
+        $('#requirementView').on('click', 'input', function () {
+
+            if ($(this).attr("class") == "date-input") {
+                $(this).datepicker('destroy').datepicker({showOn: 'focus', dateFormat: 'yy/mm/dd'}).focus();
+            }
+
+        });
+
+
+        var reqdialogRichtext = $("#reqdialogRichtext").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            modal: false,
+            width: 500,
+            buttons: {
+                OK: function () {
+                    var index = parseInt($("#currentRowIndex").val()) + 1;
+                    var scTr = $('#requirementView tr:eq(' + index + ')');
+                    var cfValue = $(scTr).find("input[name='fieldValue']");
+                    $(cfValue).val(tinyMCE.get("reqRichText").getContent());
+                    $("#currentRowIndex").val("");
+                    tinyMCE.get("reqRichText").setContent("");
+                    $(this).dialog("close");
+
+                }
+            },
+            close: function () {
+            }
+        });
+
+        $("#requirementView").on("click", "button", function (e) {
+            e.preventDefault();
+            //console.log($(this).attr("name"));
+            if ($(this).attr("name") == "btnViewRel") {
+                var scTr = $(this).parent().parent();
+                var crVal = $(scTr).find("input[name='cfValue']").val();
+                var oid = $(scTr).find("input[name='relObjId']").val();
+                var cfId = $(scTr).find("input[name='cfId']").val();
+                var isEmpty = true;
+                if (oid == $("#objId").val()) {
+                    console.log("detail");
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    jQuery.ajax({
+                        type: "GET",
+                        url: coDataUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            $.each(data.customFields, function (i, item) {
+
+                                if (item.id == parseInt(cfId) && item.values != null) {
+
+                                    if (typeof  item.values[0] != 'undefined') {
+                                        var title = item.values[0].name;
+                                        var cnStr = '[' , cmStr = '[';
+                                        $.each(item.values[0].customFields, function (i, item) {
+                                            if (item.type.value != 5) {
+                                                cnStr += '"' + item.name + '",';
+                                                cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},'
+                                            }
+                                        });
+                                        isEmpty = false;
+                                        cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                        cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                        jQuery('#rellist').jqGrid("GridUnload");
+                                        jQuery('#rellist').jqGrid({
+                                            jsonReader: { repeatitems: false, cell: "" },
+                                            datatype: 'jsonstring',
+                                            caption: title,
+                                            colNames: jQuery.parseJSON(cnStr),
+                                            colModel: jQuery.parseJSON(cmStr),
+                                            viewrecords: true
+                                        });
+
+                                        $.each(item.values, function (i, co) {
+                                            console.log(i);
+                                            var newRowData = '[{';
+                                            $.each(co.customFields, function (i, field) {
+                                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                                            });
+                                            newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                                            console.log(newRowData);
+                                            $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                                        });
+
+                                    }
+
+                                }
+                            });
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+                    });
+                } else {
+                    console.log("master");
+
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var handleCoData = function () {
+                        jQuery.ajax({
+                            type: "GET",
+                            url: coDataUrl,
+                            dataType: 'jsonp',
+                            jsonpCallback: 'processData',
+                            success: function (data) {
+                                var cnStr = '[' , cmStr = '[';
+                                var newRowData = '[{';
+                                $.each(data.customFields, function (i, item) {
+                                    if (item.type.value != 5) {
+                                        cnStr += '"' + item.name + '",';
+                                        cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},';
+                                        newRowData += '"' + item.name + '":"' + item.value + '",'
+                                    }
+                                });
+                                isEmpty = false;
+                                cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+
+                                jQuery('#rellist').jqGrid("GridUnload");
+                                jQuery('#rellist').jqGrid({
+                                    jsonReader: { repeatitems: false, cell: "" },
+                                    datatype: 'jsonstring',
+                                    caption: data.name,
+                                    colNames: jQuery.parseJSON(cnStr),
+                                    colModel: jQuery.parseJSON(cmStr),
+                                    viewrecords: true
+                                });
+                                $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                            },
+                            error: function (jqXHR, exception) {
+                            }
+                        });
+                    };
+                    if (crVal != "") {
+                        handleCoData();
+                    }
+                }
+
+                if (isEmpty) {
+                    jQuery('#rellist').jqGrid("GridUnload");
+                }
+
+                $("#dialogRel").dialog("open");
+            } else if ($(this).attr("name") == "btnRtEdit") {
+                reqdialogRichtext.dialog("open");
+                var val = $(this).parent().parent().find("input[name='fieldValue']").val();
+                tinyMCE.get("reqRichText").setContent(val);
+                $("#currentRowIndex").val($(this).parent().parent().index());
+            }
+
+        });
+
+        function applyReqRowFunc() {
+            $("#requirementlistgrid").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //console.log(json);
+                    crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/deldata", json, false, getProjectRequirmentList, $("#current-select-projectid").val());
+                } else if ($(this).hasClass("load-detail-act")) {
+                    //select requirement view stp  sdd
+                    var reqDesc = $(this).parents("tr").find("td:eq(5)").text();
+                    var reqType = $(this).parents("tr").find("td:eq(4)").text();
+                    var reqId = $(this).parents("tr").find("td:eq(2)").text();
+
+                    $("#sdd-select-reqId").val(reqId);
+                    $("#sdd-select-reqDesc").text(reqDesc);
+                    $("#sdd-select-reqType").text(reqType);
+
+
+                    $("#sdd-toolbar").fadeIn('400');
+
+
+                    getRequirmentSDDList(reqId);
+
+
+                } else if ($(this).hasClass("edit-row-act")) {
+                    var reqid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    openReqForm(reqid);
+
+                }
+            });
+
+        }
+
+        function saveRequirement() {
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"coPkVal":"' + $("#coReqPkVal").val() + '","customFields":[';
+            $("#requirementView").find("tbody").find("tr").each(function () {
+
+                if ($(this).find("td:eq(0) label").text() != "ProjectName") {
+                    var fieldId = $(this).find('input[name="cfId"]').val();
+                    var fieldValue = $(this).find('input[name="fieldValue"]').val();
+                    if ($(this).find('input[name="cfType"]').val() == 6) {
+                        fieldValue = JSON.stringify($('<div/>').text(fieldValue).html())
+                        fieldValue = fieldValue.substring(1, fieldValue.length - 1);
+                    }
+
+
+                    if ($(this).find('input[name="cfType"]').val() == 5) {
+                        fieldValue = $(this).find('select[name="selCr"] option:selected').val();
+                    }
+
+                    json += '{"id":' + fieldId + ' ,"value":"' + fieldValue + '" },';
+                }
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/scodata", json, false, getProjectRequirmentList, $("#current-select-projectid").val());
+
+
+        }
+
+        function saveReqSchemaAfterFunc(schemaviewid, afterFunc, param) {
+
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"customFields":[';
+            $(schemaviewid).find("tbody").find("tr").each(function () {
+
+                var fieldId = $(this).find('input[name="cfId"]').val();
+                if (fieldId === undefined) fieldId = 0;
+                var fieldName = $(this).find('input[name="fieldName"]').val();
+
+                var fieldType;
+                if (fieldName == 'ReqId' || fieldName == 'ProjectId' || fieldName == 'ReqType' || fieldName == 'ReqDescription' || fieldName == 'ReqFuncFlag' || fieldName == 'ReqRemark') {
+                    fieldType = $(this).find('input[name="fieldTypeVal"]').val();
+                } else {
+                    fieldType = $(this).find('select[name="fieldType"]').find(":selected").val();
+                }
+                var indexType = $(this).find('input[name="indexType"]').val();
+
+                json += '{"id":' + fieldId + ' ,"name":"' + fieldName + '","type":"' + fieldType + '","indexType":"' + indexType + '"},';
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/scf", json, false, afterFunc, param);
+
+
+        }
+
+        /**
+         *展開 Requirement Data Raw
+         */
+        function loadProjectRequirementObjects(projectid) {
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlistbyprj?pid=' + projectid + '&tid=' + $("#tenantId").val();
+            //var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlist?tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.customFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + Encoder.htmlDecode(field.value) + '",'
+                            }
+
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#requirementlistgrid").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+
+                    applyReqRowFunc();
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+        /***
+         * 取得專案需求列表
+         */
+        function getProjectRequirmentList(projectid) {
+
+            //clear sub panel
+            $("#sdd-toolbar").fadeOut(400);
+            $("#stp-toolbar").fadeOut(400);
+
+            $("#requirement-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#requirementlistgrid tr:gt(0)").remove();
+            $('#requirementlistgrid').jqGrid('GridUnload')
+
+
+            var reqObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+                            var defaultFields = ['ReqId', 'ProjectId', 'ReqType', 'ReqDescription', 'ReqFuncFlag', 'ReqRemark'];
+
+                            reqObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#requirementlistgrid").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            forceFit: true,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(reqObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(reqObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";
+                                $(this).setCell(id, "edit", button);
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        loadProjectRequirementObjects(projectid);
+
+
+                    });
+
+
+            $("#requirement-toolbar .panel-body").unblock();
+        }
+
+        /**
+         * 處理Requirement (insert update) Dialog
+         * @param arg
+         */
+        function openReqForm(arg) {
+            $("#coReqPkVal").val(arg);
+            var pv = $("#requirementView");
+            pv.empty();
+            $("<thead><tr><th>欄位名稱</th><th>數值</th></tr></thead><tbody>").appendTo(pv);
+            if (arg == 0) {
+
+                var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.id);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.customFields, function (i, item) {
+                            if (item.indexType.value == 1) {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"" + item.name + "\" value=\"\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+                            } else if (item.name == "ProjectId") {
+                                appendStr += "<tr><td><label>ProjectName</label></td>";
+                                appendStr += "<td>" + $("#current-select-projectname").text() + "</td></td></tr>";
+                                appendStr += "<tr><td><label>ProjectID</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#current-select-projectid").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+                            } else {
+                                appendStr += doCustomField(item, i, arg, "Requirement");
+                            }
+                        });
+                        pv.append($(appendStr));
+
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            } else {
+                var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreq?reqid=' + arg + '&tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.objectId);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.customFields, function (i, item) {
+                            if (item.indexType.value == 1) {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"" + item.name + "\" value=\"\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+                            } else if (item.name == "ProjectId") {
+                                appendStr += "<tr><td><label>ProjectName</label></td>";
+                                appendStr += "<td>" + $("#current-select-projectname").text() + "</td></td></tr>";
+                                appendStr += "<tr><td><label>ProjectID</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#current-select-projectid").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+                            } else {
+                                appendStr += doCustomField(item, i, arg, "Requirement");
+                            }
+                            /* if (item.name != 'ReqId' && item.name != 'ProjectId' && item.name != 'ReqType' && item.name != 'ReqDescription' && item.name != 'ReqFuncFlag' && item.name != 'ReqDescription') {
+                             appendStr += doCustomField(item, i, arg);
+
+                             } else {
+                             appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                             if (item.name == "ProductId") {
+                             appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + item.value + "\" class=\"text ui-widget-content ui-corner-all\" disabled/>";
+                             } else {
+                             appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + item.value + "\" class=\"text ui-widget-content ui-corner-all\" />";
+                             }
+                             appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></tr>";
+                             }*/
+
+                        });
+
+                        pv.append($(appendStr));
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            }
+
+            $("#requirement-dialog-form").dialog("open");
+
+
+        }
+
+        /**
+         *處理Requirement Schema Dialog
+         */
+        function openReqSchmeaForm() {
+            var pv = $("#requirementSchema");
+
+            pv.empty();
+            $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
+            var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: pUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    var appendStr = "";
+                    $("#objId").val(data.id);
+                    $.each(data.customFields, function (i, item) {
+
+                        if (item.name == 'ReqId' || item.name == 'ProjectId' || item.name == 'ReqType' || item.name == 'ReqDescription' || item.name == 'ReqFuncFlag' || item.name == 'ReqRemark') {
+
+                            appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' disabled >";
+                            appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                            appendStr += "<td>";
+
+                            if (item.type.value == 0) {
+                                if (item.indexType.value == 1) {
+                                    appendStr += "<input type='text' name='fieldType' value='label' disabled >";
+                                } else {
+                                    appendStr += "<input type='text' name='fieldType' value='textbox' disabled >";
+                                }
+                            } else {
+                                appendStr += "<input type='text' name='fieldType' value='number textbox' disabled >";
+                            }
+
+                            console.log(item.type.value);
+
+                            appendStr += "<input type='hidden' id='fieldTypeVal' name='fieldTypeVal' value='" + item.type.value + "'>";
+                            appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                        } else {
+
+                            if (item.type.value != 5) {
+                                appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' />";
+                                //appendStr += "<Select  name='fieldName' style='display:none'></select>"
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                                appendStr += "<td><Select id='fieldType' name='fieldType' >";
+
+                                //console.log(item.type.value);
+                                if (item.type.value == 0) {
+                                    appendStr += "<option value='0' selected>textbox</option>";
+                                } else {
+                                    appendStr += "<option value='0'>textbox</option>";
+                                }
+                                if (item.type.value == 1) {
+                                    appendStr += "<option value='1' selected>number textbox</option>";
+                                } else {
+                                    appendStr += "<option value='1'>number textbox</option>";
+                                }
+                                if (item.type.value == 2) {
+                                    appendStr += "<option value='2' selected>date</option>";
+                                } else {
+                                    appendStr += "<option value='2'>date</option>";
+                                }
+
+                                if (item.type.value == 3) {
+                                    appendStr += "<option value='3' selected>image</option>";
+                                } else {
+                                    appendStr += "<option value='3'>image</option>";
+                                }
+
+                                if (item.type.value == 4) {
+                                    appendStr += "<option value='4' selected>label</option>";
+                                } else {
+                                    appendStr += "<option value='4'>label</option>";
+                                }
+
+                                if (item.type.value == 6) {
+                                    appendStr += "<option value='6' selected>rich text</option>";
+                                } else {
+                                    appendStr += "<option value='6'>rich text</option>";
+                                }
+
+                                appendStr += "</Select>";
+                                appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                            }
+                        }
+                    });
+                    pv.append($(appendStr));
+
+                },
+                error: function (jqXHR, exception) {
+                }
+            });
+
+            $("#requirement-schema-dialog-form").dialog("open");
+
+        }
+
+
+        function addReqField() {
+            var pv = $("#requirementSchema");
+            var appendStr = "<tr>";
+            appendStr += "<td><input name='fieldName' type='text'></input></td>";
+            appendStr += "<td><Select id='fieldType' name='fieldType' >";
+            appendStr += "<option value='0'>textbox</option>";
+            appendStr += "<option value='1'>number textbox</option>";
+            appendStr += "<option value='2'>date</option>";
+            appendStr += "<option value='3'>image</option>";
+            appendStr += "<option value='4'>label</option>";
+            appendStr += "<option value='6'>rich text</option>";
+            appendStr += "</Select>";
+            appendStr += "<input type='hidden' id='indexType' name='indexType' value='0'></td></tr>";
+
+            pv.append($(appendStr));
+
+        }
+
+
+        /**
+         * 處理STP部分
+         */
+
+        $("#stpAdd").button().click(function () {
+            openStpForm(0);
+        });
+
+        $("#refreshSTPGrid").button().click(function () {
+            getSTPList($("#stp-select-reqId").val(), $("#stp-select-sddId").val());
+        });
+
+
+        $("#stpCustFields").button().click(function () {
+            openStpSchmeaForm();
+        })
+
+
+        $("#stpfAdd").button().click(function () {
+            addStpField();
+        });
+
+
+        $("#stp-schema-dialog-form").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 500,
+            width: 500,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    saveStpSchemaAfterFunc("#stpSchema", getSTPList, $("#stp-select-reqId").val(), $("#stp-select-sddId").val());
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+
+            }
+        });
+
+
+        $("#stp-dialog-form").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 400,
+            width: 450,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    saveStp();
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $('#stpView').on('click', 'input', function () {
+
+            if ($(this).attr("class") == "date-input") {
+                $(this).datepicker('destroy').datepicker({showOn: 'focus', dateFormat: 'yy/mm/dd'}).focus();
+            }
+
+        });
+
+        var stpdialogRichtext = $("#stpdialogRichtext").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            modal: false,
+            width: 500,
+            buttons: {
+                OK: function () {
+                    var index = parseInt($("#currentRowIndex").val()) + 1;
+                    var scTr = $('#stpView tr:eq(' + index + ')');
+                    var cfValue = $(scTr).find("input[name='fieldValue']");
+                    $(cfValue).val(tinyMCE.get("stpRichText").getContent());
+                    $("#currentRowIndex").val("");
+                    tinyMCE.get("stpRichText").setContent("");
+                    $(this).dialog("close");
+
+                }
+            },
+            close: function () {
+            }
+        });
+
+        $("#stpView").on("click", "button", function (e) {
+            e.preventDefault();
+            //console.log($(this).attr("name"));
+            if ($(this).attr("name") == "btnViewRel") {
+                var scTr = $(this).parent().parent();
+                var crVal = $(scTr).find("input[name='cfValue']").val();
+                var oid = $(scTr).find("input[name='relObjId']").val();
+                var cfId = $(scTr).find("input[name='cfId']").val();
+                var isEmpty = true;
+                if (oid == $("#objId").val()) {
+                    console.log("detail");
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    jQuery.ajax({
+                        type: "GET",
+                        url: coDataUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            $.each(data.customFields, function (i, item) {
+
+                                if (item.id == parseInt(cfId) && item.values != null) {
+
+                                    if (typeof  item.values[0] != 'undefined') {
+                                        var title = item.values[0].name;
+                                        var cnStr = '[' , cmStr = '[';
+                                        $.each(item.values[0].customFields, function (i, item) {
+                                            if (item.type.value != 5) {
+                                                cnStr += '"' + item.name + '",';
+                                                cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},'
+                                            }
+                                        });
+                                        isEmpty = false;
+                                        cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                        cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                        jQuery('#rellist').jqGrid("GridUnload");
+                                        jQuery('#rellist').jqGrid({
+                                            jsonReader: { repeatitems: false, cell: "" },
+                                            datatype: 'jsonstring',
+                                            caption: title,
+                                            colNames: jQuery.parseJSON(cnStr),
+                                            colModel: jQuery.parseJSON(cmStr),
+                                            viewrecords: true
+                                        });
+
+                                        $.each(item.values, function (i, co) {
+                                            console.log(i);
+                                            var newRowData = '[{';
+                                            $.each(co.customFields, function (i, field) {
+                                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                                            });
+                                            newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                                            console.log(newRowData);
+                                            $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                                        });
+
+                                    }
+
+                                }
+                            });
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+                    });
+                } else {
+                    console.log("master");
+
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var handleCoData = function () {
+                        jQuery.ajax({
+                            type: "GET",
+                            url: coDataUrl,
+                            dataType: 'jsonp',
+                            jsonpCallback: 'processData',
+                            success: function (data) {
+                                var cnStr = '[' , cmStr = '[';
+                                var newRowData = '[{';
+                                $.each(data.customFields, function (i, item) {
+                                    if (item.type.value != 5) {
+                                        cnStr += '"' + item.name + '",';
+                                        cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},';
+                                        newRowData += '"' + item.name + '":"' + item.value + '",'
+                                    }
+                                });
+                                isEmpty = false;
+                                cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+
+                                jQuery('#rellist').jqGrid("GridUnload");
+                                jQuery('#rellist').jqGrid({
+                                    jsonReader: { repeatitems: false, cell: "" },
+                                    datatype: 'jsonstring',
+                                    caption: data.name,
+                                    colNames: jQuery.parseJSON(cnStr),
+                                    colModel: jQuery.parseJSON(cmStr),
+                                    viewrecords: true
+                                });
+                                $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                            },
+                            error: function (jqXHR, exception) {
+                            }
+                        });
+                    };
+                    if (crVal != "") {
+                        handleCoData();
+                    }
+                }
+
+                if (isEmpty) {
+                    jQuery('#rellist').jqGrid("GridUnload");
+                }
+
+                $("#dialogRel").dialog("open");
+
+            } else if ($(this).attr("name") == "btnRtEdit") {
+                stpdialogRichtext.dialog("open");
+                var val = $(this).parent().parent().find("input[name='fieldValue']").val();
+                tinyMCE.get("stpRichText").setContent(val);
+                $("#currentRowIndex").val($(this).parent().parent().index());
+            }
+
+        });
+
+        function applyStpRowFunc() {
+            $("#stplistgrid").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //   console.log(json);
+                    crossDomainPostAfterFunc2("http://localhost:8080/MTAServiceResful/deldata", json, false, getSTPList, $("#stp-select-reqId").val(), $("#stp-select-sddId").val());
+                } else if ($(this).hasClass("load-detail-act")) {
+
+
+                } else if ($(this).hasClass("edit-row-act")) {
+
+                    var stpid = $(this).parents("tr").find("td:eq(2)").text();
+                    openStpForm(stpid);
+
+                }
+            });
+        }
+
+
+        function saveStp() {
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"coPkVal":"' + $("#coStpPkVal").val() + '","customFields":[';
+            $("#stpView").find("tbody").find("tr").each(function () {
+
+                if ($(this).find("td:eq(0) label").text() != "ProjectName") {
+                    var fieldId = $(this).find('input[name="cfId"]').val();
+                    var fieldValue = $(this).find('input[name="fieldValue"]').val();
+                    if ($(this).find('input[name="cfType"]').val() == 6) {
+                        fieldValue = JSON.stringify($('<div/>').text(fieldValue).html())
+                        fieldValue = fieldValue.substring(1, fieldValue.length - 1);
+                    }
+
+
+                    if ($(this).find('input[name="cfType"]').val() == 5) {
+                        fieldValue = $(this).find('select[name="selCr"] option:selected').val();
+                    }
+
+                    json += '{"id":' + fieldId + ' ,"value":"' + fieldValue + '" },';
+                }
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPostAfterFunc2("http://localhost:8080/MTAServiceResful/scodata", json, false, getSTPList, $("#stp-select-reqId").val(), $("#stp-select-sddId").val());
+
+
+        }
+
+        function saveStpSchemaAfterFunc(schemaviewid, afterFunc, param, param2) {
+
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"customFields":[';
+            $(schemaviewid).find("tbody").find("tr").each(function () {
+
+                var fieldId = $(this).find('input[name="cfId"]').val();
+                if (fieldId === undefined) fieldId = 0;
+                var fieldName = $(this).find('input[name="fieldName"]').val();
+
+                var fieldType;
+                if (fieldName == 'StpId' || fieldName == 'ReqId' || fieldName == 'SddId' || fieldName == 'StpDescription' || fieldName == 'StpRemark') {
+
+                    fieldType = $(this).find('input[name="fieldTypeVal"]').val();
+                } else {
+                    fieldType = $(this).find('select[name="fieldType"]').find(":selected").val();
+                }
+                var indexType = $(this).find('input[name="indexType"]').val();
+
+                json += '{"id":' + fieldId + ' ,"name":"' + fieldName + '","type":"' + fieldType + '","indexType":"' + indexType + '"},';
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/scf", json, false, afterFunc, param, param2);
+
+
+        }
+
+        /**
+         *展開 STP Data Raw
+         */
+        function loadRequirementSTPObjects(reqid, sddid) {
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/stp/stplistbyreq?rid=' + reqid + '&sddid=' + sddid + '&tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.cusFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                            }
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#stplistgrid").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+                    applyStpRowFunc();
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+        /***
+         * 取得STP列表
+         */
+        function getSTPList(reqid, ssdid) {
+
+
+            $("#stp-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#stplistgrid tr:gt(0)").remove();
+            $('#stplistgrid').jqGrid('GridUnload')
+
+
+            var stpObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            var defaultFields = ['StpId', 'ReqId', 'SddId', 'StpDescription', 'StpRemark'];
+
+                            stpObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#stplistgrid").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(stpObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(stpObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";
+                                $(this).setCell(id, "edit", button);
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        loadRequirementSTPObjects(reqid, ssdid);
+
+
+                    });
+
+
+            $("#stp-toolbar .panel-body").unblock();
+        }
+
+        /**
+         * 處理STP insert update) Dialog
+         * @param arg
+         */
+        function openStpForm(arg) {
+            $("#coStpPkVal").val(arg);
+            var pv = $("#stpView");
+            pv.empty();
+            $("<thead><tr><th>欄位名稱</th><th>數值</th></tr></thead><tbody>").appendTo(pv);
+            if (arg == 0) {
+
+                var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.id);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.customFields, function (i, item) {
+                            if (item.indexType.value == 1) {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"" + item.name + "\" value=\"\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+                            } else if (item.name == "SddId") {
+
+
+                                appendStr += "<tr><td><label>SddId</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#stp-select-sddId").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+
+                            } else if (item.name == "ReqId") {
+
+                                appendStr += "<tr><td><label>ReqId</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#stp-select-reqId").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+                            } else {
+                                appendStr += doCustomField(item, i, arg, "SoftwareTestPlan");
+                            }
+                        });
+                        pv.append($(appendStr));
+
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            } else {
+                var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstp?stpid=' + arg + '&tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.objectId);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.cusFields, function (i, item) {
+                            if (item.indexType.value == 1) {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"" + item.name + "\" value='" + item.value + "' class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+                            } else if (item.name == "SddId") {
+
+
+                                appendStr += "<tr><td><label>SddId</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#stp-select-sddId").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+
+                            } else if (item.name == "ReqId") {
+
+                                appendStr += "<tr><td><label>ReqId</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#stp-select-reqId").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+                            } else {
+                                appendStr += doCustomField(item, i, arg, "SoftwareTestPlan");
+                            }
+
+
+                        });
+
+                        pv.append($(appendStr));
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            }
+
+            $("#stp-dialog-form").dialog("open");
+
+
+        }
+
+        /**
+         *處理STP Schema Dialog
+         */
+        function openStpSchmeaForm() {
+            var pv = $("#stpSchema");
+
+            pv.empty();
+            $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
+            var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: pUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    var appendStr = "";
+                    $("#objId").val(data.id);
+                    $.each(data.customFields, function (i, item) {
+
+                        if (item.name == 'StpId' || item.name == 'SddId' || item.name == 'ReqId' || item.name == 'StpDescription' || item.name == 'StpRemark') {
+
+                            appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' disabled >";
+                            appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                            appendStr += "<td>";
+
+                            if (item.type.value == 0) {
+                                if (item.indexType.value == 1) {
+                                    appendStr += "<input type='text' name='fieldType' value='label' disabled >";
+                                } else {
+                                    appendStr += "<input type='text' name='fieldType' value='textbox' disabled >";
+                                }
+                            } else {
+                                appendStr += "<input type='text' name='fieldType' value='number textbox' disabled >";
+                            }
+
+                            console.log(item.type.value);
+
+                            appendStr += "<input type='hidden' id='fieldTypeVal' name='fieldTypeVal' value='" + item.type.value + "'>";
+                            appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                        } else {
+
+                            if (item.type.value != 5) {
+                                appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' />";
+                                //appendStr += "<Select  name='fieldName' style='display:none'></select>"
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                                appendStr += "<td><Select id='fieldType' name='fieldType' >";
+
+                                //console.log(item.type.value);
+                                if (item.type.value == 0) {
+                                    appendStr += "<option value='0' selected>textbox</option>";
+                                } else {
+                                    appendStr += "<option value='0'>textbox</option>";
+                                }
+                                if (item.type.value == 1) {
+                                    appendStr += "<option value='1' selected>number textbox</option>";
+                                } else {
+                                    appendStr += "<option value='1'>number textbox</option>";
+                                }
+                                if (item.type.value == 2) {
+                                    appendStr += "<option value='2' selected>date</option>";
+                                } else {
+                                    appendStr += "<option value='2'>date</option>";
+                                }
+
+                                if (item.type.value == 3) {
+                                    appendStr += "<option value='3' selected>image</option>";
+                                } else {
+                                    appendStr += "<option value='3'>image</option>";
+                                }
+
+                                if (item.type.value == 4) {
+                                    appendStr += "<option value='4' selected>label</option>";
+                                } else {
+                                    appendStr += "<option value='4'>label</option>";
+                                }
+
+                                if (item.type.value == 6) {
+                                    appendStr += "<option value='6' selected>rich text</option>";
+                                } else {
+                                    appendStr += "<option value='6'>rich text</option>";
+                                }
+
+                                appendStr += "</Select>";
+                                appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                            }
+                        }
+                    });
+                    pv.append($(appendStr));
+
+                },
+                error: function (jqXHR, exception) {
+                }
+            });
+
+            $("#stp-schema-dialog-form").dialog("open");
+
+        }
+
+
+        function addStpField() {
+            var pv = $("#stpSchema");
+            var appendStr = "<tr>";
+            appendStr += "<td><input name='fieldName' type='text'></input></td>";
+            appendStr += "<td><Select id='fieldType' name='fieldType' >";
+            appendStr += "<option value='0'>textbox</option>";
+            appendStr += "<option value='1'>number textbox</option>";
+            appendStr += "<option value='2'>date</option>";
+            appendStr += "<option value='3'>image</option>";
+            appendStr += "<option value='4'>label</option>";
+            appendStr += "<option value='6'>rich text</option>";
+            appendStr += "</Select>";
+            appendStr += "<input type='hidden' id='indexType' name='indexType' value='0'></td></tr>";
+
+            pv.append($(appendStr));
+
+        }
+
+
+        /**
+         * 處理SDD部分
+         */
+
+        $("#sddAdd").button().click(function () {
+            openSddForm(0);
+        });
+
+        $("#refreshSddGrid").button().click(function () {
+            getRequirmentSDDList($("#sdd-select-reqId").val());
+        });
+
+
+        $("#sddCustFields").button().click(function () {
+            openSddSchmeaForm();
+        })
+
+
+        $("#sddfAdd").button().click(function () {
+            addSddField();
+        });
+
+
+        $("#sdd-schema-dialog-form").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 500,
+            width: 500,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    saveSddSchemaAfterFunc("#sddSchema", getRequirmentSDDList, $("#sdd-select-reqId").val());
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+
+            }
+        });
+
+
+        $("#sdd-dialog-form").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            height: 400,
+            width: 450,
+            modal: false,
+            buttons: {
+                "OK": function () {
+                    saveSdd();
+                    $(this).dialog("close");
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $('#sddView').on('click', 'input', function () {
+
+            if ($(this).attr("class") == "date-input") {
+                $(this).datepicker('destroy').datepicker({showOn: 'focus', dateFormat: 'yy/mm/dd'}).focus();
+            }
+
+        });
+
+        var sdddialogRichtext = $("#sdddialogRichtext").dialog({
+            autoOpen: false,
+            dialogClass: 'no-close',
+            modal: false,
+            width: 500,
+            buttons: {
+                OK: function () {
+                    var index = parseInt($("#currentRowIndex").val()) + 1;
+                    var scTr = $('#sddView tr:eq(' + index + ')');
+                    var cfValue = $(scTr).find("input[name='fieldValue']");
+                    $(cfValue).val(tinyMCE.get("sddRichText").getContent());
+                    $("#currentRowIndex").val("");
+                    tinyMCE.get("sddRichText").setContent("");
+                    $(this).dialog("close");
+
+                }
+            },
+            close: function () {
+            }
+        });
+
+        $("#sddView").on("click", "button", function (e) {
+            e.preventDefault();
+            //console.log($(this).attr("name"));
+            if ($(this).attr("name") == "btnViewRel") {
+                var scTr = $(this).parent().parent();
+                var crVal = $(scTr).find("input[name='cfValue']").val();
+                var oid = $(scTr).find("input[name='relObjId']").val();
+                var cfId = $(scTr).find("input[name='cfId']").val();
+                var isEmpty = true;
+                if (oid == $("#objId").val()) {
+                    console.log("detail");
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    jQuery.ajax({
+                        type: "GET",
+                        url: coDataUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            $.each(data.customFields, function (i, item) {
+
+                                if (item.id == parseInt(cfId) && item.values != null) {
+
+                                    if (typeof  item.values[0] != 'undefined') {
+                                        var title = item.values[0].name;
+                                        var cnStr = '[' , cmStr = '[';
+                                        $.each(item.values[0].customFields, function (i, item) {
+                                            if (item.type.value != 5) {
+                                                cnStr += '"' + item.name + '",';
+                                                cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},'
+                                            }
+                                        });
+                                        isEmpty = false;
+                                        cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                        cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                        jQuery('#rellist').jqGrid("GridUnload");
+                                        jQuery('#rellist').jqGrid({
+                                            jsonReader: { repeatitems: false, cell: "" },
+                                            datatype: 'jsonstring',
+                                            caption: title,
+                                            colNames: jQuery.parseJSON(cnStr),
+                                            colModel: jQuery.parseJSON(cmStr),
+                                            viewrecords: true
+                                        });
+
+                                        $.each(item.values, function (i, co) {
+                                            console.log(i);
+                                            var newRowData = '[{';
+                                            $.each(co.customFields, function (i, field) {
+                                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                                            });
+                                            newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                                            console.log(newRowData);
+                                            $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                                        });
+
+                                    }
+
+                                }
+                            });
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+                    });
+                } else {
+                    console.log("master");
+
+                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var handleCoData = function () {
+                        jQuery.ajax({
+                            type: "GET",
+                            url: coDataUrl,
+                            dataType: 'jsonp',
+                            jsonpCallback: 'processData',
+                            success: function (data) {
+                                var cnStr = '[' , cmStr = '[';
+                                var newRowData = '[{';
+                                $.each(data.customFields, function (i, item) {
+                                    if (item.type.value != 5) {
+                                        cnStr += '"' + item.name + '",';
+                                        cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"width":100},';
+                                        newRowData += '"' + item.name + '":"' + item.value + '",'
+                                    }
+                                });
+                                isEmpty = false;
+                                cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+                                cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+                                newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+
+                                jQuery('#rellist').jqGrid("GridUnload");
+                                jQuery('#rellist').jqGrid({
+                                    jsonReader: { repeatitems: false, cell: "" },
+                                    datatype: 'jsonstring',
+                                    caption: data.name,
+                                    colNames: jQuery.parseJSON(cnStr),
+                                    colModel: jQuery.parseJSON(cmStr),
+                                    viewrecords: true
+                                });
+                                $("#rellist").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                            },
+                            error: function (jqXHR, exception) {
+                            }
+                        });
+                    };
+                    if (crVal != "") {
+                        handleCoData();
+                    }
+                }
+
+                if (isEmpty) {
+                    jQuery('#rellist').jqGrid("GridUnload");
+                }
+
+                $("#dialogRel").dialog("open");
+
+            } else if ($(this).attr("name") == "btnRtEdit") {
+                sdddialogRichtext.dialog("open");
+                var val = $(this).parent().parent().find("input[name='fieldValue']").val();
+                tinyMCE.get("sddRichText").setContent(val);
+                $("#currentRowIndex").val($(this).parent().parent().index());
+            }
+
+        });
+
+
+        function applySddRowFunc() {
+
+            $("#sddlistgrid").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //console.log(json);
+                    crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/deldata", json, false, getRequirmentSDDList, $("#sdd-select-reqId").val());
+                } else if ($(this).hasClass("load-detail-act")) {
+
+                    var reqId = $(this).parents("tr").find("td:eq(3)").text();
+                    var sddId = $(this).parents("tr").find("td:eq(2)").text();
+                    var sddDesc = $(this).parents("tr").find("td:eq(4)").text();
+
+                    $("#stp-select-reqId").val(reqId);
+                    $("#stp-select-sddId").val(sddId);
+                    $("#stp-select-sddDesc").text(sddDesc);
+
+
+                    getSTPList(reqId, sddId);
+
+
+                    $("#stp-toolbar").fadeIn('400');
+                } else if ($(this).hasClass("edit-row-act")) {
+                    var sddId = $(this).parents("tr").find("td:eq(2)").text();
+                    openSddForm(sddId);
+                }
+            });
+
+        }
+
+        function saveSdd() {
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"coPkVal":"' + $("#coSddPkVal").val() + '","customFields":[';
+            $("#sddView").find("tbody").find("tr").each(function () {
+
+                if ($(this).find("td:eq(0) label").text() != "ProjectName") {
+                    var fieldId = $(this).find('input[name="cfId"]').val();
+                    var fieldValue = $(this).find('input[name="fieldValue"]').val();
+                    if ($(this).find('input[name="cfType"]').val() == 6) {
+                        fieldValue = JSON.stringify($('<div/>').text(fieldValue).html())
+                        fieldValue = fieldValue.substring(1, fieldValue.length - 1);
+                    }
+
+
+                    if ($(this).find('input[name="cfType"]').val() == 5) {
+                        fieldValue = $(this).find('select[name="selCr"] option:selected').val();
+                    }
+
+                    json += '{"id":' + fieldId + ' ,"value":"' + fieldValue + '" },';
+                }
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/scodata", json, false, getRequirmentSDDList, $("#sdd-select-reqId").val());
+
+
+        }
+
+        function saveSddSchemaAfterFunc(schemaviewid, afterFunc, param) {
+
+
+            var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#objId").val() + ',"customFields":[';
+            $(schemaviewid).find("tbody").find("tr").each(function () {
+
+                var fieldId = $(this).find('input[name="cfId"]').val();
+                if (fieldId === undefined) fieldId = 0;
+                var fieldName = $(this).find('input[name="fieldName"]').val();
+
+                var fieldType;
+                if (fieldName == 'SddId' || fieldName == 'ReqId' || fieldName == 'SddDescription' || fieldName == 'SddRemark') {
+
+                    fieldType = $(this).find('input[name="fieldTypeVal"]').val();
+                } else {
+                    fieldType = $(this).find('select[name="fieldType"]').find(":selected").val();
+                }
+                var indexType = $(this).find('input[name="indexType"]').val();
+
+                json += '{"id":' + fieldId + ' ,"name":"' + fieldName + '","type":"' + fieldType + '","indexType":"' + indexType + '"},';
+            });
+
+            json = json.substring(0, json.length - 1);
+            json += "]}";
+
+            //console.log(json);
+            crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/scf", json, false, afterFunc, param);
+
+
+        }
+
+        /**
+         *展開 SDD Data Raw
+         */
+        function loadRequirementSDDObjects(reqid) {
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/sdd/sddlistbyreq?rid=' + reqid + '&tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.cusFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                            }
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#sddlistgrid").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+
+                    applySddRowFunc();
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+        /***
+         * 取得STP需求列表
+         */
+        function getRequirmentSDDList(reqid) {
+
+
+            //clear sub panel
+            $("#stp-toolbar").fadeOut(400);
+
+            $("#sdd-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#sddlistgrid tr:gt(0)").remove();
+            $('#sddlistgrid').jqGrid('GridUnload')
+
+
+            var sddObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            var defaultFields = ['SddId', 'ReqId', 'SddDescription', 'SddRemark'];
+
+                            sddObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#sddlistgrid").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(sddObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(sddObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";
+                                $(this).setCell(id, "edit", button);
+
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        loadRequirementSDDObjects(reqid);
+
+
+                    });
+
+
+            $("#sdd-toolbar .panel-body").unblock();
+        }
+
+        /**
+         * 處理SDD (insert update) Dialog
+         * @param arg
+         */
+        function openSddForm(arg) {
+            $("#coSddPkVal").val(arg);
+            var pv = $("#sddView");
+            pv.empty();
+            $("<thead><tr><th>欄位名稱</th><th>數值</th></tr></thead><tbody>").appendTo(pv);
+            if (arg == 0) {
+
+                var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.id);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.customFields, function (i, item) {
+                            if (item.indexType.value == 1) {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"" + item.name + "\" value=\"\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+                            } else if (item.name == "ReqId") {
+
+
+                                appendStr += "<tr><td><label>ReqId</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#sdd-select-reqId").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+
+                            } else {
+                                appendStr += doCustomField(item, i, arg, "SoftwareDesignDocument");
+                            }
+                        });
+                        pv.append($(appendStr));
+
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            } else {
+                var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsdd?sddid=' + arg + '&tid=' + $("#tenantId").val();
+                jQuery.ajax({
+                    type: "GET",
+                    url: pUrl,
+                    dataType: 'jsonp',
+                    jsonpCallback: 'processData',
+                    success: function (data) {
+                        $("#objId").val(data.objectId);
+                        var appendStr = "";
+                        relAry = [];
+                        $.each(data.cusFields, function (i, item) {
+                            if (item.indexType.value == 1) {
+                                appendStr += "<tr><td><label>" + item.name + "</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"" + item.name + "\" value='" + item.value + "' class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+                            } else if (item.name == "ReqId") {
+
+                                appendStr += "<tr><td><label>ReqId</label></td>";
+                                appendStr += "<td><input type=\"text\" name=\"fieldValue\" value=\"" + $("#sdd-select-reqId").val() + "\" class=\"text ui-widget-content ui-corner-all\" disabled />";
+                                appendStr += "<input type='hidden' id='cfType' name='cfType' value='" + item.type.value + "'>";
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td></td></tr>";
+
+                            } else {
+                                appendStr += doCustomField(item, i, arg, "SoftwareDesignDocument");
+                            }
+
+
+                        });
+
+                        pv.append($(appendStr));
+                        if (relAry.length > 0) {
+                            doCusRelSelect(pv);
+                        }
+
+                    },
+                    error: function (jqXHR, exception) {
+                    }
+                });
+            }
+
+            $("#sdd-dialog-form").dialog("open");
+
+
+        }
+
+        /**
+         *處理SDD Schema Dialog
+         */
+        function openSddSchmeaForm() {
+            var pv = $("#sddSchema");
+
+            pv.empty();
+            $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
+            var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: pUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    var appendStr = "";
+                    $("#objId").val(data.id);
+                    $.each(data.customFields, function (i, item) {
+
+                        if (item.name == 'SddId' || item.name == 'ReqId' || item.name == 'SddDescription' || item.name == 'SddRemark') {
+
+                            appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' disabled >";
+                            appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                            appendStr += "<td>";
+
+                            if (item.type.value == 0) {
+                                if (item.indexType.value == 1) {
+                                    appendStr += "<input type='text' name='fieldType' value='label' disabled >";
+                                } else {
+                                    appendStr += "<input type='text' name='fieldType' value='textbox' disabled >";
+                                }
+                            } else {
+                                appendStr += "<input type='text' name='fieldType' value='number textbox' disabled >";
+                            }
+
+                            console.log(item.type.value);
+
+                            appendStr += "<input type='hidden' id='fieldTypeVal' name='fieldTypeVal' value='" + item.type.value + "'>";
+                            appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                        } else {
+
+                            if (item.type.value != 5) {
+                                appendStr += "<tr><td><input type='text' name='fieldName' value='" + item.name + "' />";
+                                //appendStr += "<Select  name='fieldName' style='display:none'></select>"
+                                appendStr += "<input type='hidden' id='cfId' name='cfId' value='" + item.id + "'></td>";
+                                appendStr += "<td><Select id='fieldType' name='fieldType' >";
+
+                                //console.log(item.type.value);
+                                if (item.type.value == 0) {
+                                    appendStr += "<option value='0' selected>textbox</option>";
+                                } else {
+                                    appendStr += "<option value='0'>textbox</option>";
+                                }
+                                if (item.type.value == 1) {
+                                    appendStr += "<option value='1' selected>number textbox</option>";
+                                } else {
+                                    appendStr += "<option value='1'>number textbox</option>";
+                                }
+                                if (item.type.value == 2) {
+                                    appendStr += "<option value='2' selected>date</option>";
+                                } else {
+                                    appendStr += "<option value='2'>date</option>";
+                                }
+
+                                if (item.type.value == 3) {
+                                    appendStr += "<option value='3' selected>image</option>";
+                                } else {
+                                    appendStr += "<option value='3'>image</option>";
+                                }
+
+                                if (item.type.value == 4) {
+                                    appendStr += "<option value='4' selected>label</option>";
+                                } else {
+                                    appendStr += "<option value='4'>label</option>";
+                                }
+
+                                if (item.type.value == 6) {
+                                    appendStr += "<option value='6' selected>rich text</option>";
+                                } else {
+                                    appendStr += "<option value='6'>rich text</option>";
+                                }
+
+                                appendStr += "</Select>";
+                                appendStr += "<input type='hidden' id='indexType' name='indexType' value='" + item.indexType.value + "'></td></tr>";
+                            }
+                        }
+                    });
+                    pv.append($(appendStr));
+
+                },
+                error: function (jqXHR, exception) {
+                }
+            });
+
+            $("#sdd-schema-dialog-form").dialog("open");
+
+        }
+
+
+        function addSddField() {
+            var pv = $("#sddSchema");
+            var appendStr = "<tr>";
+            appendStr += "<td><input name='fieldName' type='text'></input></td>";
+            appendStr += "<td><Select id='fieldType' name='fieldType' >";
+            appendStr += "<option value='0'>textbox</option>";
+            appendStr += "<option value='1'>number textbox</option>";
+            appendStr += "<option value='2'>date</option>";
+            appendStr += "<option value='3'>image</option>";
+            appendStr += "<option value='4'>label</option>";
+            appendStr += "<option value='6'>rich text</option>";
+            appendStr += "</Select>";
+            appendStr += "<input type='hidden' id='indexType' name='indexType' value='0'></td></tr>";
+
+            pv.append($(appendStr));
+
+        }
+
+
+        function crossDomainPost(url, text, refersh) {
+            // Add the iframe with a unique name
+            var iframe = document.createElement("iframe");
+            var uniqueNameOfFrame = "sum";
+            document.body.appendChild(iframe);
+            iframe.style.display = "none";
+            iframe.contentWindow.name = uniqueNameOfFrame;
+
+            // construct a form with hidden inputs, targeting the iframe
+            var form = document.createElement("form");
+            form.target = uniqueNameOfFrame;
+            form.action = url;
+            form.method = "POST";
+
+            // repeat for each parameter
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "text";
+            input.value = text;
+            form.appendChild(input);
+            document.body.appendChild(form);
+
+            form.submit();
+
+            if (refersh)setTimeout(function () {
+                location.reload();
+            }, 500);
+        }
+
+
+        function crossDomainPostAfterFunc(url, text, refersh, afterfunc) {
+
+            $.post(url, { "text": text }).then(afterfunc);
+
+
+        }
+
+
+        function crossDomainPostAfterFunc1(url, text, refersh, afterfunc, param) {
+
+            $.post(url, { "text": text }).then(afterfunc(param));
+
+
+        }
+
+        function crossDomainPostAfterFunc2(url, text, refersh, afterfunc, param, param2) {
+
+            $.post(url, { "text": text }).then(afterfunc(param, param2));
+
+
+        }
+
+
+    });
+})(jQuery);
+
+</script>
+
+
+</body>
+</html>

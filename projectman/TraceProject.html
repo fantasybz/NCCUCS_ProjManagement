@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>專案管理情境實作-Product</title>
+    <meta name="generator" content="Bootply"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="../css/styles.css" rel="stylesheet">
+    <link href="../assets/jqueryui/css/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+    <link href="../assets/jqGrid/css/ui.jqgrid.css" rel="stylesheet">
+
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NCCUCS SAASLab Project Management</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="./project.html">[專案資料管理]</a></li>
+                <li><a href="./project.html">[需求資料管理]</a></li>
+                <li><a href="./project.html">[軟體設計文件管理(SDD)]</a></li>
+                <li><a href="./project.html">[軟體測試計劃管理(STP)]</a></li>
+                <li><a href="./TraceProject.html">[專案資料追溯]</a></li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="Search...">
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+
+<div class="row row-offcanvas row-offcanvas-left">
+
+<div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+
+    <br>
+
+    <ul class="nav nav-sidebar"><span class="label label-success">Angular.js UI</span>
+        <li><a href="../MTAUIComponents/viewdata.html">[View Data]</a></li>
+
+
+    </ul>
+
+    <ul class="nav nav-sidebar"><span class="label label-success">專案需求管理情境</span>
+        <li><a href="./project.html">[專案管理-Project]</a></li>
+        <li><a href="./project.html">[需求管理-Requirement]</a></li>
+        <li><a href="./project.html">[軟體設計文件管理-SDD]</a></li>
+        <li><a href="./project.html">[軟體測試計劃管理-STP]</a></li>
+        <li><a href="#">[專案資料追溯]</a></li>
+        <li><a href="./customobject.html">[客製化領域物件]</a></li>
+
+    </ul>
+
+
+    <ul class="nav nav-sidebar"><span class="label label-warning">購物車情境實作</span>
+
+        <li><a href="../shoopingmall/product.html">Product</a></li>
+        <li><a href="../shoopingmall/order.html">Order</a></li>
+        <li><a href="../shoopingmall/customobject.html">CustomObject</a></li>
+    </ul>
+
+
+</div>
+<!--/span-->
+
+<style>
+
+    body {
+        font-family: "微軟正黑體", Arial, Verdana !important;
+    }
+
+    #dialog label, #dialog input {
+        display: block;
+    }
+
+    #dialog label {
+        margin-top: 0.5em;
+    }
+
+    #dialog input, #dialog textarea {
+        width: 95%;
+    }
+
+    .no-close .ui-dialog-titlebar-close {
+        display: none
+    }
+
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        position: relative;
+        margin: 0em;
+        padding: 0;
+        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: left;
+
+    }
+
+    .ui-jqgrid .ui-jqgrid-view {
+        font-size: 14px;
+        font-family: "微軟正黑體", Arial, Verdana !important;;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable th {
+
+        height: 30px;
+    }
+
+    /* .ui-jqgrid tr.jqgrow td {
+         height: 28px !important;
+     }*/
+
+    .ui-jqgrid tr.jqgrow td {
+        word-wrap: break-word; /* IE 5.5+ and CSS3 */
+        white-space: pre-wrap; /* CSS3 */
+        white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+        white-space: -pre-wrap; /* Opera 4-6 */
+        white-space: -o-pre-wrap; /* Opera 7 */
+        overflow: hidden;
+        height: auto;
+        vertical-align: middle;
+        padding-top: 3px;
+        padding-bottom: 3px
+    }
+
+    .customField {
+        background: #d6e9c6;
+    }
+
+    .relationField {
+        background: #5bc0de;
+    }
+
+
+</style>
+
+
+<input type="hidden" id="userId" name="userId" value="1">
+<input type="hidden" id="tenantId" name="tenantId" value="0">
+<input type="hidden" id="objId" name="objId" value="0">
+<input type="hidden" id="coPkVal" name="coPkVal" value="0">
+<input type="hidden" id="coReqPkVal" name="coReqPkVal" value="0">
+<input type="hidden" id="coSddPkVal" name="coSddPkVal" value="0">
+<input type="hidden" id="coStpPkVal" name="coStpPkVal" value="0">
+
+
+<input type="hidden" id="currentRowIndex" name="currentRowIndex" value="0">
+
+<div class="col-sm-9 col-md-10 main">
+<h1>專案資料追溯</h1>
+
+<h1 id="hTname"></h1>
+
+<h2>請選擇多租戶使用者:<select id="tenant-user-select" class="form-control input-lg"></select></h2>
+<hr>
+
+<div id="project-toolbar" class="panel panel-warning">
+    <div class="panel-heading">
+        <h3 class="panel-title">專案資訊(Project)</h3>
+    </div>
+    <div class="panel-body">
+        <!-- <span id="toolbar">
+
+             <button id="refreshPrjGrid" class="btn btn-success"><span
+                     class="glyphicon glyphicon-refresh">更新專案列表</span></button>
+
+             <button id="pAdd" class="btn btn-info"><span class="glyphicon glyphicon glyphicon-plus"></span>新增專案
+             </button>
+             <button id="pEdit" class="btn btn-info"><span class="glyphicon glyphicon glyphicon-cog"></span>客製化專案欄位
+             </button>
+             &lt;!&ndash;<button id="btnRel" class="btn btn-info" type="button"><span class="glyphicon glyphicon-star"></span>Edit
+                    Relationships
+                </button>&ndash;&gt;
+            </span>-->
+
+        <p></p>
+
+
+        <table id="list4"></table>
+    </div>
+</div>
+<div id="requirement-toolbar" class="panel panel-success" style="display: none;">
+    <div class="panel-heading">
+        <h3 class="panel-title">專案需求項目資訊(Requirement)</h3>
+    </div>
+    <div class="panel-body">
+
+
+        <!--<div class="panel panel-default">
+
+            <div class="panel-body">
+                <h3>
+                    <span>目前選擇專案 : </span>
+                    <span id="current-select-projectname" class="label label-warning">XX專案</span>
+                </h3>
+            </div>
+        </div>-->
+
+
+        <input id="current-select-projectid" type="hidden" value=""/>
+        <!-- <span>
+
+             <button id="refreshReqGrid" class="btn btn-success"><span
+                     class="glyphicon glyphicon-refresh">更新需求列表</span></button>
+
+             <button id="reqAdd" class="btn btn-success"><span class="glyphicon glyphicon-plus">新增需求項目</span>
+             </button>
+
+             <button id="reqCustFields" class="btn btn-success"><span class="glyphicon glyphicon-cog">客製化需求欄位</span>
+             </button>
+
+         </span>-->
+
+        <p></p>
+        <table id="requirementlistgrid"></table>
+    </div>
+</div>
+
+<div id="sdd-toolbar" class="panel panel-info" style="display: none;">
+    <div class="panel-heading">
+        <h3 class="panel-title">軟體設計文件資訊(SoftwareDesignDocument)</h3>
+    </div>
+    <div class="panel-body">
+
+        <!-- <div class="panel panel-default">
+
+             <div class="panel-body">
+                 <h3>
+                     <span>目前選擇需求項目 :</span>
+                     <span id="sdd-select-reqDesc" class="label label-warning"
+                           Style="margin-bottom:5px;margin-top:5px;margin-right:5px;text-align: left; display:block;">XX專案</span>
+                     <span id="sdd-select-reqType" class="label label-warning">XX專案</span>
+
+                 </h3>
+             </div>
+         </div>-->
+
+        <input id="sdd-select-reqId" type="hidden" value=""/>
+
+
+        <!--  <span>
+
+              <button id="refreshSddGrid" class="btn btn-info"><span class="glyphicon glyphicon-refresh"></span>更新SDD列表
+              </button>
+
+              <button id="sddAdd" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span>新增SDD項目</button>
+
+              <button id="sddCustFields" class="btn btn-info"><span class="glyphicon glyphicon-cog"></span>客製化SDD欄位
+              </button>
+
+          </span>-->
+
+        <p></p>
+        <table id="sddlistgrid"></table>
+    </div>
+</div>
+
+<div id="stp-toolbar" class="panel panel-primary" style="display: none;">
+    <div class="panel-heading">
+        <h3 class="panel-title">軟體測試計劃(SoftwareTestPlan)</h3>
+    </div>
+    <div class="panel-body">
+
+        <!--      <div class="panel panel-default">
+
+                  <div class="panel-body">
+                      <h3>
+                          <span>目前選擇需求項目 :</span>
+                          <span id="stp-select-sddDesc" class="label label-primary"
+                                Style="margin-bottom:5px;margin-top:5px;margin-right:5px;text-align: left;display:block;">XX專案</span>
+
+                      </h3>
+
+
+                  </div>
+
+
+              </div>-->
+        <input id="stp-select-reqId" type="hidden" value=""/>
+        <input id="stp-select-sddId" type="hidden" value=""/>
+        <!--<span>
+
+            <button id="refreshSTPGrid" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span>
+                更新STP列表
+            </button>
+
+            <button id="stpAdd" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> 新增STP項目
+            </button>
+
+            <button id="stpCustFields" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span>
+                客製化STP欄位
+            </button>
+
+        </span>-->
+
+        <p></p>
+        <table id="stplistgrid"></table>
+    </div>
+</div>
+
+
+<!-- dialog-form 區載-->
+
+<!--<div id="dialog-form" title="編輯專案(Project)資訊">
+    <div>
+        <table id="projectView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidProject" name="hidProject" value=""/>
+    </div>
+</div>
+
+<div id="requirement-dialog-form" title="編輯需求(Requirement)資訊">
+    <div>
+        <table id="requirementView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidRequirement" name="hidRequirement" value=""/>
+    </div>
+</div>
+
+<div id="sdd-dialog-form" title="編輯軟體設計文件(SDD)資訊">
+    <div>
+        <table id="sddView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidSDD" name="hidSDD" value=""/>
+    </div>
+</div>
+
+
+<div id="stp-dialog-form" title="編輯軟體測試計劃(STP)資訊">
+    <div>
+        <table id="stpView" class="ui-widget ui-widget-content">
+        </table>
+
+        <input type="hidden" id="hidSTP" name="hidSTP" value=""/>
+    </div>
+</div>
+
+
+<div id="dialog-form2" title="客製化專案欄位">
+    <button id="fAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="productSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="requirement-schema-dialog-form" title="客製化需求欄位">
+    <button id="reqfAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="requirementSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="sdd-schema-dialog-form" title="客製化SDD欄位">
+    <button id="sddfAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="sddSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="stp-schema-dialog-form" title="客製化STP欄位">
+    <button id="stpfAdd" class="btn">Add Field</button>
+    <p></p>
+
+    <p></p>
+    <table id="stpSchema" class="ui-widget ui-widget-content">
+
+
+    </table>
+
+</div>
+
+<div id="dialogRel" title="Custom Relationship">
+    <table id="rellist">
+    </table>
+</div>
+
+
+<div id="relation" title="Custom Relationships">
+
+    <table id="relationlist"></table>
+
+</div>
+
+
+<div id="dialogRichtext" title="Rich Text Editor">
+
+    <textarea name="pRichText" id="pRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>
+
+<div id="reqdialogRichtext" title="Rich Text Editor">
+
+    <textarea name="reqRichText" id="reqRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>
+
+
+<div id="sdddialogRichtext" title="Rich Text Editor">
+
+    <textarea name="sddRichText" id="sddRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>
+
+<div id="stpdialogRichtext" title="Rich Text Editor">
+
+    <textarea name="stpRichText" id="stpRichText"
+              cols="0" rows="0" style="width: 100%; height: 250px;"
+              class="mce_editable" aria-hidden="true"></textarea>
+</div>-->
+
+
+</div>
+
+<!--/row-->
+</div>
+</div>
+<!--/.container-->
+
+<footer>
+    <p class="pull-right">©2014 Company</p>
+</footer>
+
+<div id="domMessage" style="display:none;">
+    <h3>載入多租戶資訊 請稍後....</h3>
+</div>
+
+<!-- script references -->
+<script src="../assets/jqueryui/js/jquery-1.9.1.js"></script>
+<script src="../assets/jqueryui/js/jquery-ui-1.10.3.custom.js"></script>
+<script src="../assets/jqGrid/js/i18n/grid.locale-en.js"></script>
+<script src="../assets/jqGrid/js/jquery.jqGrid.min.js"></script>
+
+
+<script src="../assets/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+<script src="../js/jquery.blockUI.js"></script>
+
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>-->
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/underscore.js"></script>
+<script src="../js/encoder.js"></script>
+<script src="../js/ajaxq.js"></script>
+
+<script type="text/javascript">
+tinyMCE.init({
+    // General
+    directionality: "ltr",
+    editor_selector: "mce_editable",
+    language: "en",
+    mode: "specific_textareas",
+    skin: "default",
+    theme: "advanced",
+    // Cleanup/Output
+    inline_styles: true,
+    gecko_spellcheck: true,
+    entity_encoding: "raw",
+    extended_valid_elements: "hr[id|title|alt|class|width|size|noshade|style],img[class|src|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style],a[id|class|name|href|hreflang|target|title|onclick|rel|style]",
+    force_br_newlines: false, force_p_newlines: true, forced_root_block: "p",
+    invalid_elements: "script,applet,iframe",
+    // URL
+    relative_urls: false,
+    remove_script_host: false,
+    document_base_url: "",
+    // Layout
+    content_css: "css/editor.css",
+    // Advanced theme
+    theme_advanced_toolbar_location: "top",
+    theme_advanced_toolbar_align: "left",
+    theme_advanced_source_editor_height: "550",
+    theme_advanced_source_editor_width: "750",
+    theme_advanced_resizing: true,
+    theme_advanced_resize_horizontal: false,
+    theme_advanced_statusbar_location: "bottom", theme_advanced_path: true
+});
+jQuery.noConflict();
+(function ($) {
+    $(function () {
+
+        $(document).ajaxStop($.unblockUI);
+
+        $.blockUI({ message: $('#domMessage') });
+
+        var userlistUrl = 'http://localhost:8080/MTAServiceResful/ulist';
+
+        $.ajax({
+            type: "GET",
+            url: userlistUrl,
+            cache: false,
+            dataType: 'jsonp',
+            jsonpCallback: 'processData',
+            success: function (data) {
+                $("#tenant-user-select").empty();
+
+                $.each(data, function (index, item) {
+                    $("#tenant-user-select").append('<option value = "' + item.id + '">' + item.tenantName + '</option>');
+
+                });
+
+                $("#userId").val($("#tenant-user-select").val());
+                loadTenantUserPrj();
+
+
+            }, error: function (jqXHR, exception) {
+                if (jqXHR.status === 0) {
+                    alert('Not connect.\n Verify Network.');
+                } else if (jqXHR.status == 404) {
+                    alert('Requested page not found. [404]');
+                } else if (jqXHR.status == 500) {
+                    alert('Internal Server Error [500].');
+                } else if (exception === 'parsererror') {
+                    alert('Requested JSON parse failed.');
+                } else if (exception === 'timeout') {
+                    alert('Time out error.');
+                } else if (exception === 'abort') {
+                    alert('Ajax request aborted.');
+                } else {
+                    alert('Uncaught Error.\n' + jqXHR.responseText);
+                }
+            }
+
+        });
+
+
+        $("#tenant-user-select").on('change', function () {
+            $("#userId").val($(this).val());
+            loadTenantUserPrj();
+        });
+
+
+        function loadTenantUserPrj() {
+            var userUrl = 'http://localhost:8080/MTAServiceResful/u?uid=' + $("#userId").val();
+
+
+            $.when(jQuery.ajax({
+                type: "GET",
+                url: userUrl,
+                cache: false,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+                    $("#tenantId").val(data.tenantId);
+                    $("#hTname").text(data.tenantName);
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            })).done(function (a1) {
+                getProjectList();
+            });
+
+        }
+
+
+        function applyPrjRowFunc() {
+
+            $("#list4").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //console.log(json);
+
+                    crossDomainPostAfterFunc("http://localhost:8080/MTAServiceResful/deldata", json, false, getProjectList());
+                } else if ($(this).hasClass("load-detail-act")) {
+                    //select project view requirement
+
+                    var projName = $(this).parents("tr").find("td:eq(3)").text();
+                    var projId = $(this).parents("tr").find("td:eq(2)").text();
+
+                    $("#current-select-projectname").text(projName);
+                    $("#current-select-projectid").val(projId);
+
+                    getProjectRequirmentList(projId);
+
+                    $("#requirement-toolbar").fadeIn('400');
+                } else if ($(this).hasClass("edit-row-act")) {
+                    var projId = $(this).parents("tr").find("td:eq(2)").text();
+                    openForm(projId);
+                }
+            });
+        }
+
+
+        $("#refreshPrjGrid").button().click(function () {
+            getProjectList();
+
+        });
+
+
+        /***
+         * 取得專案列表
+         */
+        function getProjectList() {
+
+
+            //clear sub panel
+            $("#requirement-toolbar").fadeOut(400);
+            $("#sdd-toolbar").fadeOut(400);
+            $("#stp-toolbar").fadeOut(400);
+
+
+            $("#project-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#list4 tr:gt(0)").remove();
+            $('#list4').jqGrid('GridUnload')
+
+            var projObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+                            var defaultFields = ['ProjectId', 'ProjectName', 'Unit'];
+                            projObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#list4").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            forceFit: true,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(projObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(projObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                /*button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                 button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";*/
+                                $(this).setCell(id, "edit", button);
+
+
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        loadProjectObjects();
+
+
+                    });
+
+
+            $("#project-toolbar .panel-body").unblock();
+        }
+
+        function loadProjectObjects() {
+
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/project/prjlist?tid=' + $("#tenantId").val();
+
+            jQuery.ajax({
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.customFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                            }
+
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#list4").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+                    applyPrjRowFunc();
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+        function setRelationValue(field) {
+
+            if (field != null && field.length == 1) {
+                var valarray = _.pluck(field[0].customFields, 'value');
+                return valarray.join("-");
+            } else {
+
+                return "";
+            }
+        }
+
+
+        function setCustomFieldColor(defaultCells, fieldName) {
+
+            var findResult = _.find(defaultCells, function (dfcell) {
+                return dfcell == fieldName;
+            });
+
+
+            if (_.isUndefined(findResult)) {
+
+                return ',"classes":"customField"';
+
+            } else {
+
+
+                return "";
+
+            }
+
+
+        }
+
+        function generateJqGridModel(defaultCells, mtaObjMeta) {
+            var obj = mtaObjMeta;
+            var cnStr = '[';
+            var cmStr = '[';
+
+            $.each(obj.customFields, function (i, item) {
+
+                if (i == 0) {
+
+                    cnStr += '"","objectId",';
+
+                    cmStr += '{"name": "edit", "index": "edit", "align": "center", "sortable": false },';
+                    cmStr += '{"name": "objectId", "index": "objectId", "hidden": true},';
+                }
+
+                if (item.type.value != 5) {
+                    cnStr += '"' + item.name + '",';
+                    cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false' + setCustomFieldColor(defaultCells, item.name) + '},'
+                }
+
+                if (item.type.value == 5) {
+
+                    cnStr += '"' + item.name + '",';
+                    cmStr += '{"index":"' + item.name + '","name":"' + item.name + '","search":false,"classes":"relationField"},'
+                }
+
+            });
+            cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+            cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+
+            return {colNamesStr: cnStr, colModelStr: cmStr};
+
+        }
+
+
+        /**
+         * 處理Requirement部分
+         */
+
+
+
+        function applyReqRowFunc() {
+            $("#requirementlistgrid").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //console.log(json);
+                    crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/deldata", json, false, getProjectRequirmentList, $("#current-select-projectid").val());
+                } else if ($(this).hasClass("load-detail-act")) {
+                    //select requirement view stp  sdd
+                    var reqDesc = $(this).parents("tr").find("td:eq(5)").text();
+                    var reqType = $(this).parents("tr").find("td:eq(4)").text();
+                    var reqId = $(this).parents("tr").find("td:eq(3)").text();
+
+                    $("#sdd-select-reqId").val(reqId);
+                    $("#sdd-select-reqDesc").text(reqDesc);
+                    $("#sdd-select-reqType").text(reqType);
+
+
+                    $("#sdd-toolbar").fadeIn('400');
+
+
+                    getRequirmentSDDList(reqId);
+
+
+                } else if ($(this).hasClass("edit-row-act")) {
+                    var reqid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    openReqForm(reqid);
+
+                }
+            });
+
+        }
+
+
+        /**
+         *展開 Requirement Data Raw
+         */
+        function loadProjectRequirementObjects(projectid) {
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlistbyprj?pid=' + projectid + '&tid=' + $("#tenantId").val();
+            //var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlist?tid=' + $("#tenantId").val();
+            jQuery.ajax({
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.customFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + Encoder.htmlDecode(field.value) + '",'
+                            }
+
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#requirementlistgrid").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+
+                    applyReqRowFunc();
+
+                    var reqIdArr = getreqlistReqIdArr();
+
+                    if (reqIdArr.length > 0) {
+                        $("#sdd-toolbar").fadeIn('400');
+                        getRequirmentSDDList(reqIdArr);
+
+
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+
+        function getreqlistReqIdArr() {
+            var reqidArr = new Array();
+            $("#requirementlistgrid").find("tr:not(:eq(0))").find("td:eq(2)").each(function (index, element) {
+
+                reqidArr.push($(element).text());
+            });
+
+
+            return reqidArr;
+
+        }
+
+
+        function getsddlistSddIdArr() {
+            var arr = new Array();
+            $("#sddlistgrid").find("tr:not(:eq(0))").find("td:eq(2)").each(function (index, element) {
+
+                arr.push($(element).text());
+            });
+
+
+            return arr;
+
+        }
+
+        function getsddlistReqIdArr() {
+            var arr = new Array();
+            $("#sddlistgrid").find("tr:not(:eq(0))").find("td:eq(3)").each(function (index, element) {
+
+                arr.push($(element).text());
+            });
+
+
+            return arr;
+
+        }
+
+        /***
+         * 取得專案需求列表
+         */
+        function getProjectRequirmentList(projectid) {
+
+            //clear sub panel
+            $("#sdd-toolbar").fadeOut(400);
+            $("#stp-toolbar").fadeOut(400);
+
+            $("#requirement-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#requirementlistgrid tr:gt(0)").remove();
+            $('#requirementlistgrid').jqGrid('GridUnload')
+
+
+            var reqObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+                            var defaultFields = ['ReqId', 'ProjectId', 'ReqType', 'ReqDescription', 'ReqFuncFlag', 'ReqRemark'];
+
+                            reqObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#requirementlistgrid").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            forceFit: true,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(reqObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(reqObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                /*var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                 button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                 button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";
+                                 $(this).setCell(id, "edit", button);*/
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        loadProjectRequirementObjects(projectid);
+
+
+                    });
+
+
+            $("#requirement-toolbar .panel-body").unblock();
+        }
+
+
+        /**
+         * 處理STP部分
+         */
+
+
+        /**
+         *展開 STP Data Raw
+         */
+        function loadRequirementSTPObjects(reqid, sddid) {
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/stp/stplistbyreq?rid=' + reqid + '&sddid=' + sddid + '&tid=' + $("#tenantId").val();
+            $.ajaxq("MyQueue", {
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.cusFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                            }
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#stplistgrid").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+                    /* applyStpRowFunc();*/
+
+
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+        /***
+         * 取得STP列表
+         */
+        function getSTPList(sddidArr, reqidArr) {
+
+
+            $("#stp-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#stplistgrid tr:gt(0)").remove();
+            $('#stplistgrid').jqGrid('GridUnload')
+
+
+            var stpObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            var defaultFields = ['StpId', 'ReqId', 'SddId', 'StpDescription', 'StpRemark'];
+
+                            stpObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#stplistgrid").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(stpObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(stpObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                /*var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                 button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                 button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";
+                                 $(this).setCell(id, "edit", button);*/
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        for (index = 0; index < reqidArr.length; index++) {
+                            loadRequirementSTPObjects(reqidArr[index], sddidArr[index]);
+                        }
+
+
+                    });
+
+
+            $("#stp-toolbar .panel-body").unblock();
+        }
+
+
+        function applyStpRowFunc() {
+            $("#stplistgrid").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //   console.log(json);
+                    crossDomainPostAfterFunc2("http://localhost:8080/MTAServiceResful/deldata", json, false, getSTPList, $("#stp-select-reqId").val(), $("#stp-select-sddId").val());
+                } else if ($(this).hasClass("load-detail-act")) {
+
+
+                } else if ($(this).hasClass("edit-row-act")) {
+
+                    var stpid = $(this).parents("tr").find("td:eq(2)").text();
+                    openStpForm(stpid);
+
+                }
+            });
+        }
+
+
+        /**
+         * 處理SDD部分
+         */
+
+
+
+        $("#refreshSddGrid").button().click(function () {
+            getRequirmentSDDList($("#sdd-select-reqId").val());
+        });
+
+
+        function applySddRowFunc() {
+
+            $("#sddlistgrid").on("click", ".load-detail-act,.delete-row-act,.edit-row-act", function (event) {
+                event.preventDefault();
+
+                if ($(this).hasClass("delete-row-act")) {
+
+                    var objectid = $(this).parents("tr").find("td:eq(1)").text();
+                    var projectid = $(this).parents("tr").find("td:eq(2)").text();
+
+                    var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + objectid + ',"coPkVal":"' + projectid + '"}';
+
+                    //console.log(json);
+                    crossDomainPostAfterFunc1("http://localhost:8080/MTAServiceResful/deldata", json, false, getRequirmentSDDList, $("#sdd-select-reqId").val());
+                } else if ($(this).hasClass("load-detail-act")) {
+
+                    var reqId = $(this).parents("tr").find("td:eq(3)").text();
+                    var sddId = $(this).parents("tr").find("td:eq(2)").text();
+                    var sddDesc = $(this).parents("tr").find("td:eq(4)").text();
+
+                    $("#stp-select-reqId").val(reqId);
+                    $("#stp-select-sddId").val(sddId);
+                    $("#stp-select-sddDesc").text(sddDesc);
+
+
+                    getSTPList(reqId, sddId);
+
+
+                    $("#stp-toolbar").fadeIn('400');
+                } else if ($(this).hasClass("edit-row-act")) {
+                    var sddId = $(this).parents("tr").find("td:eq(2)").text();
+                    openSddForm(sddId);
+                }
+            });
+
+        }
+
+
+        /**
+         *展開 SDD Data Raw
+         */
+        function loadRequirementSDDObjects(reqid, islast) {
+            var olistUrl = 'http://localhost:8080/MTAServiceResful/sdd/sddlistbyreq?rid=' + reqid + '&tid=' + $("#tenantId").val();
+            $.ajaxq("MyQueue", {
+                type: "GET",
+                url: olistUrl,
+                dataType: 'jsonp',
+                jsonpCallback: 'processData',
+                success: function (data) {
+
+                    $.each(data, function (i, item) {
+                        //var newRowData = '[{"delete":"delete",';
+                        var newRowData = '[{';
+                        $.each(item.cusFields, function (i, field) {
+                            if (field.type.value == 5) {
+
+                                newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
+
+                            } else {
+
+                                newRowData += '"' + field.name + '":"' + field.value + '",'
+                            }
+                        });
+
+                        newRowData += '"objectId":"' + item.objectId + '",';
+                        newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
+                        $("#sddlistgrid").jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
+                    });
+
+
+                    /*applySddRowFunc();*/
+                    if (islast) {
+                        var SddIdArr = getsddlistSddIdArr();
+                        var ReqIdArr = getsddlistReqIdArr();
+
+                        if (SddIdArr.length > 0) {
+                            $("#stp-toolbar").fadeIn('400');
+                            getSTPList(SddIdArr, ReqIdArr);
+                        }
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+        }
+
+        /***
+         * 取得STP需求列表
+         */
+        var getRequirmentSDDList = function (reqIdArr) {
+
+            var _dfr;
+            _dfr = $.Deferred();
+
+            //clear sub panel
+            $("#stp-toolbar").fadeOut(400);
+
+            $("#sdd-toolbar .panel-body").block({
+                message: '<h3>Please Wait...</h3>',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff',
+                    top: '100px'
+
+                } });
+
+
+            //清空需求列表 tr
+            $("#sddlistgrid tr:gt(0)").remove();
+            $('#sddlistgrid').jqGrid('GridUnload')
+
+
+            var sddObjMeta;
+            var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+
+            $.when(
+                    jQuery.ajax({
+                        type: "GET",
+                        url: pUrl,
+                        dataType: 'jsonp',
+                        jsonpCallback: 'processData',
+                        success: function (data) {
+
+                            var defaultFields = ['SddId', 'ReqId', 'SddDescription', 'SddRemark'];
+
+                            sddObjMeta = generateJqGridModel(defaultFields, data);
+
+                        },
+                        error: function (jqXHR, exception) {
+                        }
+
+                    })).done(function () {
+
+                        jQuery("#sddlistgrid").jqGrid({
+                            //url: olistUrl,
+                            datatype: "jsonstring",
+                            jsonReader: {
+                                repeatitems: false
+                            },
+                            height: 350,
+                            width: null,
+                            shrinkToFit: false,
+                            autowidth: true,
+                            colNames: jQuery.parseJSON(sddObjMeta.colNamesStr),
+                            colModel: jQuery.parseJSON(sddObjMeta.colModelStr),
+
+                            pager: "#jqGridPager01",
+                            viewrecords: true,
+                            caption: "",
+                            hidegrid: false,
+                            altRows: false,
+
+
+                            afterInsertRow: function (id, currentData, jsondata) {
+                                /*  var button = "<button type='button' class='btn btn-xs btn-success load-detail-act' style='margin-right: 5px'>展開</button>";
+                                 button += "<button type='button' class='btn btn-xs btn-info edit-row-act' style='margin-right: 5px'>編輯</button>";
+                                 button += "<button type='button' class='btn btn-xs btn-danger delete-row-act'>刪除</button>";
+                                 $(this).setCell(id, "edit", button);*/
+
+                            },
+                            loadComplete: function (data) {
+                                $(".gridbutton").button().on('click', function (e) {
+                                    e.preventDefault();
+                                    alert('Edit id: ' + $(this).data("id"));
+                                });
+                            }
+
+                        });
+
+                        for (index = 0; index < reqIdArr.length; index++) {
+                            if (index == reqIdArr.length - 1) {
+                                loadRequirementSDDObjects(reqIdArr[index], true);
+                            } else {
+                                loadRequirementSDDObjects(reqIdArr[index], false);
+                            }
+
+
+                            setTimeout("", 1000);
+
+                        }
+
+                    });
+
+
+            $("#sdd-toolbar .panel-body").unblock();
+            return _dfr.promise();
+
+        }
+
+
+        function crossDomainPost(url, text, refersh) {
+            // Add the iframe with a unique name
+            var iframe = document.createElement("iframe");
+            var uniqueNameOfFrame = "sum";
+            document.body.appendChild(iframe);
+            iframe.style.display = "none";
+            iframe.contentWindow.name = uniqueNameOfFrame;
+
+            // construct a form with hidden inputs, targeting the iframe
+            var form = document.createElement("form");
+            form.target = uniqueNameOfFrame;
+            form.action = url;
+            form.method = "POST";
+
+            // repeat for each parameter
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "text";
+            input.value = text;
+            form.appendChild(input);
+            document.body.appendChild(form);
+
+            form.submit();
+
+            if (refersh)setTimeout(function () {
+                location.reload();
+            }, 500);
+        }
+
+
+        function crossDomainPostAfterFunc(url, text, refersh, afterfunc) {
+
+            $.post(url, { "text": text }).then(afterfunc);
+
+
+        }
+
+
+        function crossDomainPostAfterFunc1(url, text, refersh, afterfunc, param) {
+
+            $.post(url, { "text": text }).then(afterfunc(param));
+
+
+        }
+
+        function crossDomainPostAfterFunc2(url, text, refersh, afterfunc, param, param2) {
+
+            $.post(url, { "text": text }).then(afterfunc(param, param2));
+
+
+        }
+
+
+    });
+})(jQuery);
+
+</script>
+
+
+</body>
+</html>
