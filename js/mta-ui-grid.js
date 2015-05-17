@@ -214,6 +214,9 @@ function generateJqGridModel(defaultCells, mtaObjMeta) {
 
     return {colNamesStr: cnStr, colModelStr: cmStr};
 
+
+
+
 }
 
 
