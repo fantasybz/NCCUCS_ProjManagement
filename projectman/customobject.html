@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -241,7 +241,9 @@ jQuery.noConflict();
 (function ($) {
     $(function () {
 
-        var userlistUrl = 'http://localhost:8080/MTAServiceResful/ulist';
+        var MTAServiceURL = 'http://192.168.1.109:8080/MTAServiceResful/';
+
+        var userlistUrl = MTAServiceURL + 'ulist';
 
         $.ajax({
             type: "GET",
@@ -366,7 +368,7 @@ jQuery.noConflict();
 
         function loadCustomObjects(coId) {
 
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/colist?tid=' + $("#tenantId").val() + "&oid=" + coId;
+            var olistUrl = MTAServiceURL+'colist?tid=' + $("#tenantId").val() + "&oid=" + coId;
 
             var handleGrid = function () {
 
@@ -420,7 +422,7 @@ jQuery.noConflict();
             $("#myTab").empty();
             $("#divCus").empty();
 
-            var userUrl = 'http://localhost:8080/MTAServiceResful/u?uid=' + $("#userId").val();
+            var userUrl = MTAServiceURL+'u?uid=' + $("#userId").val();
             $.when(jQuery.ajax({
                 type: "GET",
                 url: userUrl,
@@ -449,7 +451,7 @@ jQuery.noConflict();
                     }
                 }
             })).done(function (a1) {
-                var olistUrl = 'http://localhost:8080/MTAServiceResful/comdlist?tid=' + $("#tenantId").val();
+                var olistUrl = MTAServiceURL+'comdlist?tid=' + $("#tenantId").val();
                 var handleCo = function () {
                     jQuery.ajax({
                         type: "GET",
@@ -497,7 +499,7 @@ jQuery.noConflict();
                 Add: function () {
                     var text = '{\"name\":\"' + $("#frmAddObject").find("input[name='object_name']").val() + '\",\"tid\":' + $("#tenantId").val() + '}';
                     //crossDomainPost("http://localhost:8080/MTAServiceResful/addco", text, true);
-                    crossDomainPostAfterFunc("http://localhost:8080/MTAServiceResful/addco", text, true, loadTenantUserCustomObjs);
+                    crossDomainPostAfterFunc(MTAServiceURL + "addco", text, true, loadTenantUserCustomObjs);
                     //alert(text);
                     //$("#hidText").val(text);
                     //alert($("#hidText").val());
@@ -743,7 +745,7 @@ jQuery.noConflict();
             //console.log(json);
             //crossDomainPost("http://localhost:8080/MTAServiceResful/scf", json, true);
 
-            crossDomainPostAfterFunc("http://localhost:8080/MTAServiceResful/scf", json, true, loadTenantUserCustomObjs);
+            crossDomainPostAfterFunc(MTAServiceURL + "scf", json, true, loadTenantUserCustomObjs);
 
             dialogObjectEdit.dialog("close");
             //todo reload problem
@@ -776,7 +778,7 @@ jQuery.noConflict();
             } else {
                 dialogObjectData.dialog('option', 'title', 'Edit Data');
 
-                var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#coId").val() + '&opk=' + objPk;
+                var coDataUrl = MTAServiceURL + 'co?tid=' + $("#tenantId").val() + '&oid=' + $("#coId").val() + '&opk=' + objPk;
 
                 var handleCoData = function () {
                     jQuery.ajax({
@@ -860,7 +862,7 @@ jQuery.noConflict();
 
         function doCusRelSelect() {
 
-            var relUrl = 'http://localhost:8080/MTAServiceResful/cr?tid=' + $("#tenantId").val() + "&cid=" + $("#coId").val();
+            var relUrl = MTAServiceURL + 'cr?tid=' + $("#tenantId").val() + "&cid=" + $("#coId").val();
             var rows = $("#objData tr:gt(0)"); // skip the header row
             var crCo = null;
             $.when(jQuery.ajax({
@@ -908,7 +910,7 @@ jQuery.noConflict();
             var sel = $(scTr).find("select[name='selCr']");
 
             var appendStr = "";
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/colist?tid=' + $("#tenantId").val() + "&oid=" + oid;
+            var olistUrl = MTAServiceURL + 'colist?tid=' + $("#tenantId").val() + "&oid=" + oid;
             //console.log(olistUrl);
             $.when(jQuery.ajax({
                 type: "GET",
@@ -962,7 +964,7 @@ jQuery.noConflict();
             //console.log(json);
             //crossDomainPost("http://localhost:8080/MTAServiceResful/scodata", json, true);
 
-            crossDomainPostAfterFunc2("http://localhost:8080/MTAServiceResful/scodata", json, true, initTab, $("#coName").val(), false);
+            crossDomainPostAfterFunc2(MTAServiceURL + "scodata", json, true, initTab, $("#coName").val(), false);
 
             dialogObjectEdit.dialog("close");
 
@@ -973,7 +975,7 @@ jQuery.noConflict();
 
             $("#dialogRelation").dialog("open");
             //$("#relationLabel").text("Master Object : " + $("#coName").val());
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/comdlist?tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL + 'comdlist?tid=' + $("#tenantId").val();
 
             $("#relationlist").jqGrid("setGridParam", { datatype: "jsonp", url: olistUrl }).trigger("reloadGrid");
         });
@@ -1010,7 +1012,7 @@ jQuery.noConflict();
 
                 var grid = $("#relationlist");
                 var ids = grid.getDataIDs();
-                var userUrl = 'http://localhost:8080/MTAServiceResful/cr?tid=' + $("#tenantId").val() + '&cid=' + $("#coId").val();
+                var userUrl = MTAServiceURL + 'cr?tid=' + $("#tenantId").val() + '&cid=' + $("#coId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: userUrl,
@@ -1051,7 +1053,7 @@ jQuery.noConflict();
 
             var json = '{"tid":' + $("#tenantId").val() + ',"cid":' + $("#coId").val() + ',"coids":"' + val + '"}';
             //crossDomainPost("http://localhost:8080/MTAServiceResful/scr", json, true);
-            crossDomainPostAfterFunc("http://localhost:8080/MTAServiceResful/scr", json, true, loadTenantUserCustomObjs);
+            crossDomainPostAfterFunc(MTAServiceURL+"scr", json, true, loadTenantUserCustomObjs);
 
         };
 
@@ -1070,7 +1072,7 @@ jQuery.noConflict();
             var json = '{"tid":' + $("#tenantId").val() + ',"customObjectId":' + $("#coId").val() + ',"coPkVals":"' + delIds + '"}';
             //console.log(json);
             //crossDomainPost("http://localhost:8080/MTAServiceResful/delcos", json, true);
-            crossDomainPostAfterFunc2("http://localhost:8080/MTAServiceResful/delcos", json, true, initTab, $("#coName").val(), false);
+            crossDomainPostAfterFunc2(MTAServiceURL + "delcos", json, true, initTab, $("#coName").val(), false);
 
         })
 
@@ -1087,7 +1089,7 @@ jQuery.noConflict();
 
                 if (oid == $("#coId").val()) {
                     //console.log(1);
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#coId").val() + '&opk=' + $("#coPkVal").val();
+                    var coDataUrl = MTAServiceURL + 'co?tid=' + $("#tenantId").val() + '&oid=' + $("#coId").val() + '&opk=' + $("#coPkVal").val();
                     jQuery.ajax({
                         type: "GET",
                         url: coDataUrl,
@@ -1158,7 +1160,7 @@ jQuery.noConflict();
 
         var handleCoData = function () {
 
-            var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+            var coDataUrl = MTAServiceURL + 'co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
 
             jQuery.ajax({
                 type: "GET",
@@ -1216,7 +1218,7 @@ jQuery.noConflict();
 
         function loadByKw() {
 
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/colistbk?tid=' + $("#tenantId").val() + '&oid=' + $("#coId").val() + '&kw=' + $("#keyword").val();
+            var olistUrl = MTAServiceURL+'colistbk?tid=' + $("#tenantId").val() + '&oid=' + $("#coId").val() + '&kw=' + $("#keyword").val();
             //$("#list4").trigger("reloadGrid");
             var handleGrid = function () {
                 jQuery.ajax({

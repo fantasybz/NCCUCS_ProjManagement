@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -156,7 +156,10 @@
     (function ($) {
         $(function () {
 
-            var userUrl = 'http://localhost:8080/MTAServiceResful/u?uid=' + $("#userId").val();
+            var MTAServiceURL = 'http://192.168.1.109:8080/MTAServiceResful/';
+
+
+            var userUrl = MTAServiceURL+'u?uid=' + $("#userId").val();
             $.when(jQuery.ajax({
                 type: "GET",
                 url: userUrl,
@@ -186,7 +189,7 @@
                 }
             })).done(function (a1) {
 
-                var olistUrl2 = 'http://localhost:8080/MTAServiceResful/olist?tid=' + $("#tenantId").val();
+                var olistUrl2 = MTAServiceURL+'olist?tid=' + $("#tenantId").val();
                 jQuery("#list4").jqGrid({
                     url: olistUrl2,
                     datatype: "jsonp",
@@ -234,7 +237,7 @@
                 $("#dialog-form").dialog("open");
                 //jQuery("#list5").empty();
                 //jQuery("#list5").jqGrid('clearGridData');
-                var odurl = 'http://localhost:8080/MTAServiceResful/od?tid=' + $("#tenantId").val() + '&oid=' + arg;
+                var odurl = MTAServiceURL+'od?tid=' + $("#tenantId").val() + '&oid=' + arg;
                 jQuery("#list5").jqGrid({
                     url: odurl,
                     datatype: "jsonp",

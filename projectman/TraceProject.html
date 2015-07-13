@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -513,11 +513,13 @@ jQuery.noConflict();
 (function ($) {
     $(function () {
 
+        var MTAServiceURL = 'http://192.168.1.109:8080/MTAServiceResful/';
+
         $(document).ajaxStop($.unblockUI);
 
         $.blockUI({ message: $('#domMessage') });
 
-        var userlistUrl = 'http://localhost:8080/MTAServiceResful/ulist';
+        var userlistUrl = MTAServiceURL+'ulist';
 
         $.ajax({
             type: "GET",
@@ -565,7 +567,7 @@ jQuery.noConflict();
 
 
         function loadTenantUserPrj() {
-            var userUrl = 'http://localhost:8080/MTAServiceResful/u?uid=' + $("#userId").val();
+            var userUrl = MTAServiceURL+'u?uid=' + $("#userId").val();
 
 
             $.when(jQuery.ajax({
@@ -675,7 +677,7 @@ jQuery.noConflict();
             $('#list4').jqGrid('GridUnload')
 
             var projObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'project/rprojs?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({
@@ -742,7 +744,7 @@ jQuery.noConflict();
 
         function loadProjectObjects() {
 
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/project/prjlist?tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'project/prjlist?tid=' + $("#tenantId").val();
 
             jQuery.ajax({
                 type: "GET",
@@ -914,8 +916,8 @@ jQuery.noConflict();
          *展開 Requirement Data Raw
          */
         function loadProjectRequirementObjects(projectid) {
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlistbyprj?pid=' + projectid + '&tid=' + $("#tenantId").val();
-            //var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlist?tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'requirement/reqlistbyprj?pid=' + projectid + '&tid=' + $("#tenantId").val();
+            //var olistUrl = MTAServiceURL+'requirement/reqlist?tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: olistUrl,
@@ -1044,7 +1046,7 @@ jQuery.noConflict();
 
 
             var reqObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'requirement/rreqmeta?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({
@@ -1118,7 +1120,7 @@ jQuery.noConflict();
          *展開 STP Data Raw
          */
         function loadRequirementSTPObjects(reqid, sddid) {
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/stp/stplistbyreq?rid=' + reqid + '&sddid=' + sddid + '&tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'stp/stplistbyreq?rid=' + reqid + '&sddid=' + sddid + '&tid=' + $("#tenantId").val();
             $.ajaxq("MyQueue", {
                 type: "GET",
                 url: olistUrl,
@@ -1197,7 +1199,7 @@ jQuery.noConflict();
 
 
             var stpObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'stp/rstpmeta?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({
@@ -1343,7 +1345,7 @@ jQuery.noConflict();
          *展開 SDD Data Raw
          */
         function loadRequirementSDDObjects(reqid, islast) {
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/sdd/sddlistbyreq?rid=' + reqid + '&tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'sdd/sddlistbyreq?rid=' + reqid + '&tid=' + $("#tenantId").val();
             $.ajaxq("MyQueue", {
                 type: "GET",
                 url: olistUrl,
@@ -1435,7 +1437,7 @@ jQuery.noConflict();
 
 
             var sddObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'sdd/rsddmeta?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({

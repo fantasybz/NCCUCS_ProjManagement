@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -510,11 +510,13 @@ jQuery.noConflict();
 (function ($) {
     $(function () {
 
+        var MTAServiceURL = 'http://192.168.1.109:8080/MTAServiceResful/';
+
         $(document).ajaxStop($.unblockUI);
 
         $.blockUI({ message: $('#domMessage') });
 
-        var userlistUrl = 'http://localhost:8080/MTAServiceResful/ulist';
+        var userlistUrl = MTAServiceURL+'ulist';
 
         $.ajax({
             type: "GET",
@@ -562,7 +564,7 @@ jQuery.noConflict();
 
 
         function loadTenantUserPrj() {
-            var userUrl = 'http://localhost:8080/MTAServiceResful/u?uid=' + $("#userId").val();
+            var userUrl = MTAServiceURL+'u?uid=' + $("#userId").val();
 
 
             $.when(jQuery.ajax({
@@ -751,7 +753,7 @@ jQuery.noConflict();
             $('#list4').jqGrid('GridUnload')
 
             var projObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'project/rprojs?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({
@@ -818,7 +820,7 @@ jQuery.noConflict();
 
         function loadProjectObjects() {
 
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/project/prjlist?tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'project/prjlist?tid=' + $("#tenantId").val();
 
             jQuery.ajax({
                 type: "GET",
@@ -949,7 +951,7 @@ jQuery.noConflict();
             $("<thead><tr><th>Name</th><th>Value</th></tr></thead><tbody>").appendTo(pv);
             if (arg == 0) {
 
-                var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'project/rprojs?tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -979,7 +981,7 @@ jQuery.noConflict();
                     }
                 });
             } else {
-                var pUrl = 'http://localhost:8080/MTAServiceResful/project/rproj?pid=' + arg + '&tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'project/rproj?pid=' + arg + '&tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -1065,7 +1067,7 @@ jQuery.noConflict();
 
         function doCusRelSelect(activeView) {
             var rows = $(activeView).find("tr:gt(0)"); // skip the header row
-            var relUrl = 'http://localhost:8080/MTAServiceResful/cr?tid=' + $("#tenantId").val() + "&cid=" + $("#objId").val();
+            var relUrl = MTAServiceURL+'cr?tid=' + $("#tenantId").val() + "&cid=" + $("#objId").val();
             var crCo = null;
             $.when(jQuery.ajax({
                 type: "GET",
@@ -1113,7 +1115,7 @@ jQuery.noConflict();
             var sel = $(scTr).find("select[name='selCr']");
 
             var appendStr = "";
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/colist?tid=' + $("#tenantId").val() + "&oid=" + oid;
+            var olistUrl = MTAServiceURL+'colist?tid=' + $("#tenantId").val() + "&oid=" + oid;
             //console.log(olistUrl);
             $.when(jQuery.ajax({
                 type: "GET",
@@ -1154,7 +1156,7 @@ jQuery.noConflict();
 
             pv.empty();
             $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
-            var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'project/rprojs?tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: pUrl,
@@ -1362,7 +1364,7 @@ jQuery.noConflict();
 
             $("#relation").dialog("open");
 
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/comdlist?tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'comdlist?tid=' + $("#tenantId").val();
 
             $("#relationlist").jqGrid("setGridParam", { datatype: "jsonp", url: olistUrl }).trigger("reloadGrid");
         });
@@ -1398,7 +1400,7 @@ jQuery.noConflict();
             loadComplete: function () {
                 var grid = $("#relationlist");
                 var ids = grid.getDataIDs();
-                var userUrl = 'http://localhost:8080/MTAServiceResful/cr?tid=' + $("#tenantId").val() + '&cid=' + $("#objId").val();
+                var userUrl = MTAServiceURL+'cr?tid=' + $("#tenantId").val() + '&cid=' + $("#objId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: userUrl,
@@ -1484,7 +1486,7 @@ jQuery.noConflict();
                 var isEmpty = true;
                 if (oid == $("#objId").val()) {
                     console.log("detail");
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
                     jQuery.ajax({
                         type: "GET",
                         url: coDataUrl,
@@ -1540,7 +1542,7 @@ jQuery.noConflict();
                 } else {
                     console.log("master");
 
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
                     var handleCoData = function () {
                         jQuery.ajax({
                             type: "GET",
@@ -1698,7 +1700,7 @@ jQuery.noConflict();
                 var isEmpty = true;
                 if (oid == $("#objId").val()) {
                     console.log("detail");
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
                     jQuery.ajax({
                         type: "GET",
                         url: coDataUrl,
@@ -1754,7 +1756,7 @@ jQuery.noConflict();
                 } else {
                     console.log("master");
 
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
                     var handleCoData = function () {
                         jQuery.ajax({
                             type: "GET",
@@ -1915,8 +1917,8 @@ jQuery.noConflict();
          *展開 Requirement Data Raw
          */
         function loadProjectRequirementObjects(projectid) {
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlistbyprj?pid=' + projectid + '&tid=' + $("#tenantId").val();
-            //var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlist?tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'requirement/reqlistbyprj?pid=' + projectid + '&tid=' + $("#tenantId").val();
+            //var olistUrl = MTAServiceURL+'requirement/reqlist?tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: olistUrl,
@@ -1998,7 +2000,7 @@ jQuery.noConflict();
 
 
             var reqObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'requirement/rreqmeta?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({
@@ -2073,7 +2075,7 @@ jQuery.noConflict();
             $("<thead><tr><th>欄位名稱</th><th>數值</th></tr></thead><tbody>").appendTo(pv);
             if (arg == 0) {
 
-                var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'requirement/rreqmeta?tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -2111,7 +2113,7 @@ jQuery.noConflict();
                     }
                 });
             } else {
-                var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreq?reqid=' + arg + '&tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'requirement/rreq?reqid=' + arg + '&tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -2176,7 +2178,7 @@ jQuery.noConflict();
 
             pv.empty();
             $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
-            var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'requirement/rreqmeta?tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: pUrl,
@@ -2385,7 +2387,7 @@ jQuery.noConflict();
                 var isEmpty = true;
                 if (oid == $("#objId").val()) {
                     console.log("detail");
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
                     jQuery.ajax({
                         type: "GET",
                         url: coDataUrl,
@@ -2441,7 +2443,7 @@ jQuery.noConflict();
                 } else {
                     console.log("master");
 
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
                     var handleCoData = function () {
                         jQuery.ajax({
                             type: "GET",
@@ -2590,7 +2592,7 @@ jQuery.noConflict();
          *展開 STP Data Raw
          */
         function loadRequirementSTPObjects(reqid, sddid) {
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/stp/stplistbyreq?rid=' + reqid + '&sddid=' + sddid + '&tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'stp/stplistbyreq?rid=' + reqid + '&sddid=' + sddid + '&tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: olistUrl,
@@ -2667,7 +2669,7 @@ jQuery.noConflict();
 
 
             var stpObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'stp/rstpmeta?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({
@@ -2742,7 +2744,7 @@ jQuery.noConflict();
             $("<thead><tr><th>欄位名稱</th><th>數值</th></tr></thead><tbody>").appendTo(pv);
             if (arg == 0) {
 
-                var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'stp/rstpmeta?tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -2788,7 +2790,7 @@ jQuery.noConflict();
                     }
                 });
             } else {
-                var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstp?stpid=' + arg + '&tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'stp/rstp?stpid=' + arg + '&tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -2851,7 +2853,7 @@ jQuery.noConflict();
 
             pv.empty();
             $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
-            var pUrl = 'http://localhost:8080/MTAServiceResful/stp/rstpmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'stp/rstpmeta?tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: pUrl,
@@ -3060,7 +3062,7 @@ jQuery.noConflict();
                 var isEmpty = true;
                 if (oid == $("#objId").val()) {
                     console.log("detail");
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + $("#objId").val() + '&opk=' + $("#coPkVal").val();
                     jQuery.ajax({
                         type: "GET",
                         url: coDataUrl,
@@ -3116,7 +3118,7 @@ jQuery.noConflict();
                 } else {
                     console.log("master");
 
-                    var coDataUrl = 'http://localhost:8080/MTAServiceResful/co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
+                    var coDataUrl = MTAServiceURL+'co?tid=' + $("#tenantId").val() + '&oid=' + oid + '&opk=' + crVal;
                     var handleCoData = function () {
                         jQuery.ajax({
                             type: "GET",
@@ -3277,7 +3279,7 @@ jQuery.noConflict();
          *展開 SDD Data Raw
          */
         function loadRequirementSDDObjects(reqid) {
-            var olistUrl = 'http://localhost:8080/MTAServiceResful/sdd/sddlistbyreq?rid=' + reqid + '&tid=' + $("#tenantId").val();
+            var olistUrl = MTAServiceURL+'sdd/sddlistbyreq?rid=' + reqid + '&tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: olistUrl,
@@ -3358,7 +3360,7 @@ jQuery.noConflict();
 
 
             var sddObjMeta;
-            var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'sdd/rsddmeta?tid=' + $("#tenantId").val();
 
             $.when(
                     jQuery.ajax({
@@ -3434,7 +3436,7 @@ jQuery.noConflict();
             $("<thead><tr><th>欄位名稱</th><th>數值</th></tr></thead><tbody>").appendTo(pv);
             if (arg == 0) {
 
-                var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'sdd/rsddmeta?tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -3473,7 +3475,7 @@ jQuery.noConflict();
                     }
                 });
             } else {
-                var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsdd?sddid=' + arg + '&tid=' + $("#tenantId").val();
+                var pUrl = MTAServiceURL+'sdd/rsdd?sddid=' + arg + '&tid=' + $("#tenantId").val();
                 jQuery.ajax({
                     type: "GET",
                     url: pUrl,
@@ -3527,7 +3529,7 @@ jQuery.noConflict();
 
             pv.empty();
             $("<thead><tr><th>Field Name</th><th>Field Type</th></tr></thead><tbody>").appendTo(pv);
-            var pUrl = 'http://localhost:8080/MTAServiceResful/sdd/rsddmeta?tid=' + $("#tenantId").val();
+            var pUrl = MTAServiceURL+'sdd/rsddmeta?tid=' + $("#tenantId").val();
             jQuery.ajax({
                 type: "GET",
                 url: pUrl,
