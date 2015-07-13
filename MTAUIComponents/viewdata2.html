@@ -1,86 +1,6 @@
 <!DOCTYPE html><html><head lang="en">    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">            <title></title>        <!-- Le styles -->        <link href="../css/views/bootstrap-combined.min.css" rel="stylesheet">            <link href="../css/views/jquery-ui-1.10.3.custom.css" rel="stylesheet">                <link href="../assets/jqGrid/css/ui.jqgrid.css" rel="stylesheet">                    <link href="../css/views/view-mta.css" rel="stylesheet">                        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->                        <!--[if lt IE 9]>                        <script src="../js/views/html5shiv.js"></script>                        <![endif]-->                        <!-- Fav and touch icons -->                        <link rel="shortcut icon" href="img/favicon.png">                            <script src="../js/angular.min.js"></script>                            <script type="text/javascript" src="../js/views/jquery-2.0.0.min.js"></script>                            <!--[if lt IE 9]>                            <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>                            <![endif]-->                            <script type="text/javascript" src="../js/views/bootstrap.min.js"></script>                            <script type="text/javascript" src="../js/views/jquery-ui.js"></script>                            <script type="text/javascript" src="../js/views/jquery.ui.touch-punch.min.js"></script>                            <script type="text/javascript" src="../js/views/jquery.htmlClean.js"></script>                            <script src="../assets/jqGrid/js/i18n/grid.locale-en.js"></script>                            <script src="../assets/jqGrid/js/jquery.jqGrid.min.js"></script>                            <script type="text/javascript" src="../ckeditor/ckeditor.js"></script>                            <script type="text/javascript" src="../ckeditor/config.js"></script>                            <script src="../js/underscore.js"></script>                            <script src="../js/encoder.js"></script>                            <script src="../js/ajaxq.js"></script>                            <script src="../js/mta-ui-grid.js"></script>                        </head>                        <body ng-app="MTAUIDirective">                            <div ng-controller="Controller"><div class="container-fluid">
 <div class="row-fluid">
 <div class="span12">
-<ul class="thumbnails">
-    <li class="span4">
-        <div class="thumbnail">
-            <img alt="300x200" src="img/people.jpg" />
-            <div class="caption">
-                <h3>
-                    冯诺尔曼结构
-                </h3>
-                <p>
-                    也称普林斯顿结构，是一种将程序指令存储器和数据存储器合并在一起的存储器结构。程序指令存储地址和数据存储地址指向同一个存储器的不同物理位置。
-                </p>
-                <p>
-                    <a class="btn btn-primary" href="#">浏览</a> <a class="btn" href="#">分享</a>
-                </p>
-            </div>
-        </div>
-    </li>
-    <li class="span4">
-        <div class="thumbnail">
-            <img alt="300x200" src="img/city.jpg" />
-            <div class="caption">
-                <h3>
-                    哈佛结构
-                </h3>
-                <p>
-                    哈佛结构是一种将程序指令存储和数据存储分开的存储器结构，它的主要特点是将程序和数据存储在不同的存储空间中，进行独立编址。
-                </p>
-                <p>
-                    <a class="btn btn-primary" href="#">浏览</a> <a class="btn" href="#">分享</a>
-                </p>
-            </div>
-        </div>
-    </li>
-    <li class="span4">
-        <div class="thumbnail">
-            <img alt="300x200" src="img/sports.jpg" />
-            <div class="caption">
-                <h3>
-                    改进型哈佛结构
-                </h3>
-                <p>
-                    改进型的哈佛结构具有一条独立的地址总线和一条独立的数据总线，两条总线由程序存储器和数据存储器分时复用，使结构更紧凑。
-                </p>
-                <p>
-                    <a class="btn btn-primary" href="#">浏览</a> <a class="btn" href="#">分享</a>
-                </p>
-            </div>
-        </div>
-    </li>
-</ul>
-<ul class="nav nav-tabs">
-    <li class="active">
-        <a href="#">首页</a>
-    </li>
-    <li>
-        <a href="#">资料</a>
-    </li>
-    <li class="disabled">
-        <a href="#">信息</a>
-    </li>
-    <li class="dropdown pull-right">
-        <a href="#" data-toggle="dropdown" class="dropdown-toggle">下拉<strong class="caret"></strong></a>
-        <ul class="dropdown-menu">
-            <li>
-                <a href="#">操作</a>
-            </li>
-            <li>
-                <a href="#">设置栏目</a>
-            </li>
-            <li>
-                <a href="#">更多设置</a>
-            </li>
-            <li class="divider">
-            </li>
-            <li>
-                <a href="#">分割线</a>
-            </li>
-        </ul>
-    </li>
-</ul>
 <div class="MTA-GRID">
     <div class="mta-settings">
         <span class="label label-success mta-type">MTA-GRID</span> <span class="label mta-userinfo">Tenant1 A單位(自行研發專案)</span> <span class="label">請選擇Domain Object:</span> <select class="form-control mta-object-select"><option value="-1">請選擇</option><option value="1">Project</option><option value="3">Requirement</option><option value="22">SoftwareDesignDocument</option><option value="23">SoftwareTestPlan</option><option value="42">Vendor</option></select><input type="hidden" class="mta-selected-objid" value="3" /><input type="hidden" class="mta-cols-positions" value="[{&quot;col&quot;:1,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;" />|||
@@ -92,13 +12,13 @@
         </header>
         <mtafield>
             ProjectId
-        </mtafield>&quot;},{&quot;col&quot;:4,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
+        </mtafield>&quot;},{&quot;col&quot;:3,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
         <header>
             |||
         </header>
         <mtafield>
             ReqType
-        </mtafield>&quot;},{&quot;col&quot;:3,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
+        </mtafield>&quot;},{&quot;col&quot;:4,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
         <header>
             |||
         </header>
@@ -122,7 +42,7 @@
         </header>
         <mtafield>
             ReqCode
-        </mtafield>&quot;},{&quot;col&quot;:8,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
+        </mtafield>&quot;},{&quot;col&quot;:1,&quot;row&quot;:2,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
         <header>
             |||
         </header>
@@ -242,7 +162,7 @@
                     ReqDescription
                 </mtafield>
             </li>
-            <li class="gs-w player-revert">
+            <li class="gs-w">
                 <header>
                     |||
                 </header>
@@ -281,19 +201,135 @@
         </mta-grid>
     </div>
 </div>
-<div class="hero-unit">
-    <p>
-        一种风，只流浪在一座山谷；
-    </p>
-    <p>
-        一道堤，只护住一湾星河。
-    </p>
-    <p>
-        每次仰望星空，我总是闭上眼，
-    </p>
-    <p>
-        因为最美的一颗不在天上。
-    </p>
+<div class="MTA-GRID">
+    <div class="mta-settings">
+        <span class="label label-success mta-type">MTA-GRID</span> <span class="label mta-userinfo">Tenant1 A單位(自行研發專案)</span> <span class="label">請選擇Domain Object:</span> <select class="form-control mta-object-select"><option value="-1">請選擇</option><option value="1">Project</option><option value="3">Requirement</option><option value="22">SoftwareDesignDocument</option><option value="23">SoftwareTestPlan</option><option value="42">Vendor</option></select><input type="hidden" class="mta-selected-objid" value="42" /><input type="hidden" class="mta-cols-positions" value="[{&quot;col&quot;:1,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;" />|||
+        <mtafield>
+            VendorId
+        </mtafield>&quot;},{&quot;col&quot;:3,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
+        <header>
+            |||
+        </header>
+        <mtafield>
+            Name
+        </mtafield>&quot;},{&quot;col&quot;:2,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
+        <header>
+            |||
+        </header>
+        <mtafield>
+            Vendor_Project
+        </mtafield>&quot;}]">
+    </div>
+    <div class="mta-ui-show">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    column1
+                </th>
+                <th>
+                    column2
+                </th>
+                <th>
+                    column3
+                </th>
+                <th>
+                    column4
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    1
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    2
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    3
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    4
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+                <td>
+                    ........
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="gridster ready">
+        <ul>
+            <li class="gs-w">
+                <header>
+                    |||
+                </header>
+                <mtafield>
+                    VendorId
+                </mtafield>
+            </li>
+            <li class="gs-w">
+                <header>
+                    |||
+                </header>
+                <mtafield>
+                    Name
+                </mtafield>
+            </li>
+            <li class="gs-w player-revert">
+                <header>
+                    |||
+                </header>
+                <mtafield>
+                    Vendor_Project
+                </mtafield>
+            </li>
+        </ul>
+    </div>
+    <div class="mta-ui-code">
+        <mta-grid objectid="42" cols="['VendorId','Name','Vendor_Project']" tenantid="1">
+        </mta-grid>
+    </div>
 </div>
 </div>
 </div>

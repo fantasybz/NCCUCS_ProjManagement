@@ -5,65 +5,26 @@
 
 
 
-function loadProjectRequirementObjects(objclass, tenantId, projectid) {
-    var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlistbyprj?pid=' + projectid + '&tid=' + tenantId;
-    //var olistUrl = 'http://localhost:8080/MTAServiceResful/requirement/reqlist?tid=' + $("#tenantId").val();
-    jQuery.ajax({
-        type: "GET",
-        url: olistUrl,
-        dataType: 'jsonp',
-        jsonpCallback: 'processData',
-        success: function (data) {
-
-            $.each(data, function (i, item) {
-                //var newRowData = '[{"delete":"delete",';
-                var newRowData = '[{';
-                $.each(item.customFields, function (i, field) {
-                    if (field.type.value == 5) {
-
-                        newRowData += '"' + field.name + '":"' + setRelationValue(field.values) + '",'
-
-                    } else {
-
-                        newRowData += '"' + field.name + '":"' + Encoder.htmlDecode(field.value) + '",'
-                    }
-
-                });
-
-                newRowData += '"objectId":"' + item.objectId + '",';
-                newRowData = newRowData.substring(0, newRowData.length - 1) + '}]';
-                $(objclass).jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
-            });
 
 
-            applyReqRowFunc();
-        },
-        error: function (jqXHR, exception) {
-            if (jqXHR.status === 0) {
-                alert('Not connect.\n Verify Network.');
-            } else if (jqXHR.status == 404) {
-                alert('Requested page not found. [404]');
-            } else if (jqXHR.status == 500) {
-                alert('Internal Server Error [500].');
-            } else if (exception === 'parsererror') {
-                alert('Requested JSON parse failed.');
-            } else if (exception === 'timeout') {
-                alert('Time out error.');
-            } else if (exception === 'abort') {
-                alert('Ajax request aborted.');
-            } else {
-                alert('Uncaught Error.\n' + jqXHR.responseText);
-            }
-        }
-    });
+function setRelationValue(field) {
 
+    if (field != null && field.length == 1) {
+        var valarray = _.pluck(field[0].customFields, 'value');
+        return valarray.join("-");
+    } else {
+
+        return "";
+    }
 }
 
-function loadProjectObjects(objclass, tenantId) {
 
-    var olistUrl = 'http://localhost:8080/MTAServiceResful/project/prjlist?tid=' + tenantId;
+function loadCustomObjects(objclass, tenantId, objectId) {
 
-    jQuery.ajax({
+    var olistUrl = 'http://localhost:8080/MTAServiceResful/colist?tid=' + tenantId + "&oid=" + objectId;
+
+
+    $.ajaxq("MTAQueue", {
         type: "GET",
         url: olistUrl,
         dataType: 'jsonp',
@@ -91,7 +52,9 @@ function loadProjectObjects(objclass, tenantId) {
                 $(objclass).jqGrid('addRowData', 1, jQuery.parseJSON(newRowData));
             });
 
+/*
             applyPrjRowFunc();
+*/
         },
         error: function (jqXHR, exception) {
             if (jqXHR.status === 0) {
@@ -111,6 +74,7 @@ function loadProjectObjects(objclass, tenantId) {
             }
         }
     });
+
 
 }
 
@@ -163,6 +127,10 @@ function setjqGrid(objclass, projObjMeta) {
 
 function setCustomFieldColor(defaultCells, fieldName) {
 
+    if(defaultCells.length == 0){
+        return "";
+    }
+
     var findResult = _.find(defaultCells, function (dfcell) {
         return dfcell == fieldName;
     });
@@ -187,7 +155,37 @@ function generateJqGridModel(defaultCells, mtaObjMeta) {
     var cnStr = '[';
     var cmStr = '[';
 
-    $.each(obj.customFields, function (i, item) {
+    cnStr += '"","objectId",';
+
+    cmStr += '{"name": "edit", "index": "edit", "align": "center", "sortable": false },';
+    cmStr += '{"name": "objectId", "index": "objectId", "hidden": true},';
+
+    _.each(defaultCells,function(cellname){
+       var fielditem =  _.find(obj.customFields, function(item){ return item.name == cellname; });
+
+        if(_.isUndefined(fielditem) == false){
+
+            if (fielditem.type.value != 5) {
+                cnStr += '"' + fielditem.name + '",';
+                cmStr += '{"index":"' + fielditem.name + '","name":"' + fielditem.name + '","search":false' + setCustomFieldColor([], fielditem.name) + '},'
+            }
+
+            if (fielditem.type.value == 5) {
+
+                cnStr += '"' + fielditem.name + '",';
+                cmStr += '{"index":"' + fielditem.name + '","name":"' + fielditem.name + '","search":false,"classes":"relationField"},'
+            }
+
+        }
+
+    });
+
+    cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
+    cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
+
+    return {colNamesStr: cnStr, colModelStr: cmStr};
+
+  /*  $.each(obj.customFields, function (i, item) {
 
         if (i == 0) {
 
@@ -212,9 +210,7 @@ function generateJqGridModel(defaultCells, mtaObjMeta) {
     cnStr = cnStr.substring(0, cnStr.length - 1) + ']';
     cmStr = cmStr.substring(0, cmStr.length - 1) + ']';
 
-    return {colNamesStr: cnStr, colModelStr: cmStr};
-
-
+    return {colNamesStr: cnStr, colModelStr: cmStr};*/
 
 
 }
@@ -223,57 +219,33 @@ function generateJqGridModel(defaultCells, mtaObjMeta) {
 angular.module('MTAUIDirective', [])
     .factory('MtaDataLayer', function () {
         return {
-            getProjaObjMeta: function (tenantId, success) {
-                var projObjMeta;
-                var pUrl = 'http://localhost:8080/MTAServiceResful/project/rprojs?tid=' + tenantId;
 
+            getMTAObjMeta: function (tenantId, objectId,cols, success) {
+                var objMeta;
+                var pUrl = 'http://localhost:8080/MTAServiceResful/comd?tid=' + tenantId + "&oid=" + objectId;
 
-                jQuery.ajax({
-                    type: "GET",
+                $.ajaxq("MTAQueue", {
                     url: pUrl,
-                    dataType: 'jsonp',
+                    type: 'GET',
+                    dataType: "jsonp",
                     jsonpCallback: 'processData',
                     success: function (data) {
-                        var defaultFields = ['ProjectId', 'ProjectName', 'Unit'];
-                        projObjMeta = generateJqGridModel(defaultFields, data);
-                        success(projObjMeta);
-                    },
-                    error: function (jqXHR, exception) {
-                    }
-
-                });
-            },
-            getReqObjMeta: function (tenantId, success) {
-                var reqObjMeta;
-                var pUrl = 'http://localhost:8080/MTAServiceResful/requirement/rreqmeta?tid=' + tenantId;
-
-
-                jQuery.ajax({
-                    type: "GET",
-                    url: pUrl,
-                    dataType: 'jsonp',
-                    jsonpCallback: 'processData',
-                    success: function (data) {
-                        var defaultFields = ['ReqId', 'ProjectId', 'ReqType', 'ReqDescription', 'ReqFuncFlag', 'ReqRemark'];
-
-                        reqObjMeta = generateJqGridModel(defaultFields, data);
-
-                        success(reqObjMeta);
-
-
+                        var defaultFields = cols;
+                        objMeta = generateJqGridModel(defaultFields, data);
+                        success(objMeta);
                     },
                     error: function (jqXHR, exception) {
                     }
                 });
+
             }
+
 
 
         }
     })
     .controller('Controller', ['$scope', function ($scope, MtaDataLayer) {
-        /* MtaDataLayer.getLocations(function(data){
-         $scope.locations = data;
-         });*/
+
     }])
     .directive('mtaGrid', function (MtaDataLayer) {
         return {
@@ -288,45 +260,23 @@ angular.module('MTAUIDirective', [])
                         var id = setGridCrlID();
 
                         angular.element(iElem).append("<table id=" + id + " class='mtagrid'></table>");
-                        if (iAttrs.source == "project") {
 
-                            MtaDataLayer.getProjaObjMeta(iAttrs.tenantid, function (data) {
+                        MtaDataLayer.getMTAObjMeta(iAttrs.tenantid, iAttrs.objectid,JSON.parse(iAttrs.cols.replace(/'+/g,'"')), function (data) {
 
-                                setjqGrid("#" + id, data);
+                            setjqGrid("#" + id, data);
 
-                                loadProjectObjects("#" + id, iAttrs.tenantid);
+                            loadCustomObjects("#" + id, iAttrs.tenantid, iAttrs.objectid);
 
 
-                            });
-                        } else if (iAttrs.source == "requirement") {
+                        });
 
-                            MtaDataLayer.getReqObjMeta(iAttrs.tenantid, function (data) {
 
-                                setjqGrid("#" + id, data);
-
-                                loadProjectRequirementObjects("#" + id, iAttrs.tenantid, iAttrs.projectid)
-
-                            });
-
-                        }
                     },
                     post: function (scope, iElem, iAttrs) {
                         console.log(name + ': post link => ' + iElem.html());
                     }
                 }
             }
-            /*link: function (scope, element, attrs) {
-             if (attrs.source == "project") {
-             var id = setGridCrlID();
 
-             angular.element(element).append("<table id="+id+" class='mtagrid'></table>");
-             MtaDataLayer.getProjaObjMeta(attrs.tenantid,function(data){
-
-             setjqGrid("#"+id,data);
-
-             });
-             }
-
-             }*/
         };
     });
