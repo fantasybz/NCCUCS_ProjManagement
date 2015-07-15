@@ -21,6 +21,7 @@
     <asp:HiddenField ID="hid_tenant_id" runat="server" />
     <asp:HiddenField ID="hid_user_id" runat="server" />
 
+    <button id="refreshTenantsPageGrid" class="btn btn-success"><span class="glyphicon glyphicon-refresh">更新客製化頁面列表</span></button>
     <div id="TenantsPageTableContainer"></div>
 
     <script type="text/javascript">
@@ -32,6 +33,11 @@
             configTenantSelectData();
 
             configSelectChangeAction();
+
+            $("#refreshTenantsPageGrid").click(function () {
+
+                refreshTenantsPageGrid();
+            });
 
 
         });
@@ -133,10 +139,17 @@
                 }
             });
 
+          
+
+            refreshTenantsPageGrid();
+
+        }
+
+
+        function refreshTenantsPageGrid() {
             $('#TenantsPageTableContainer').jtable('load', {
                 TenantId: $("#ContentPlaceHolder1_hid_tenant_id").val()
             });
-
         }
 
 

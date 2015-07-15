@@ -66,7 +66,6 @@ public class EFTenantsPageRepository : ITenantsPageRepository
             efTP.TenantId = _tp.TenantId;
             efTP.UpdateDateTime = _tp.UpdateDateTime;
             efTP.CreateUserID = _tp.CreateUserID;
-            efTP.CreateDateTime = _tp.CreateDateTime;
             efTP.FileContent = _tp.FileContent;
 
             _datasource.SaveChanges();
