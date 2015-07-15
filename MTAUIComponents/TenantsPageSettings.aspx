@@ -148,7 +148,7 @@
                     Other: {
                         title: '編輯網頁版型',
                         display: function (data) {
-                            var layouturl = 'http:\/\/192.168.1.109\/MTALayoutit\/index.html?';
+                            var layouturl = 'http:\/\/192.168.1.109\/MTALayoutit\/MTALayoutitPage.aspx?';
                             return '<a target="_blank" href="' + layouturl + 'pageid=' + data.record.PageId + '">編輯版型</a>';
                         },
                         create: false,
