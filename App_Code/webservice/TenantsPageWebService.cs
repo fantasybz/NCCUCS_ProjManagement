@@ -49,7 +49,7 @@ public class TenantsPageWebService : System.Web.Services.WebService
         string appPath = HttpContext.Current.Request.ApplicationPath;
         string physicalPath = HttpContext.Current.Request.MapPath(appPath);
 
-        string MTAPageRoot = physicalPath + Resources.Resource.MTAUIPageDir;
+        string MTAPageRoot = physicalPath +"\\"+ Resources.Resource.MTAUIPageDir;
        
         WSResultObj wsro = tps.updateTenantsPageFileContent(MTAPageRoot, pageId, fileContent,layoutitContent);
 
@@ -63,7 +63,7 @@ public class TenantsPageWebService : System.Web.Services.WebService
         string appPath = HttpContext.Current.Request.ApplicationPath;
         string physicalPath = HttpContext.Current.Request.MapPath(appPath);
 
-        string MTAPageRoot = physicalPath + Resources.Resource.MTAUIPageDir;
+        string MTAPageRoot = physicalPath +"\\"+ Resources.Resource.MTAUIPageDir;
 
         WSResultObj wsro = tps.updateTenantsPageFileContent(MTAPageRoot, pageId, fileContent, layoutitContent);
 
