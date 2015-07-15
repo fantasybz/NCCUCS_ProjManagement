@@ -85,7 +85,7 @@
                         width: '15%',
                         sorting: false,
                         display: function (data) {
-                            return moment(data.record.DateAdded).format('YYYY/MM/DD HH:mm:ss');
+                            return moment(data.record.UpdateDateTime).format('YYYY/MM/DD HH:mm:ss');
                         }
                     },
                     CreateUserID: {
