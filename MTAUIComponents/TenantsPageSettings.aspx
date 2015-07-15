@@ -5,7 +5,7 @@
     <script src="../assets/jtable.2.4.0/external/json2.js"></script>
     <script src="../assets/jtable.2.4.0/jquery.jtable.js"></script>
     <script src="../assets/jtable.2.4.0/extensions/jquery.jtable.aspnetpagemethods.js"></script>
-
+    <script src="../js/moment.min.js"></script>
     <h1 id="hTname"></h1>
 
     <h2>請選擇多租戶使用者:<select id="tenant-user-select" class="form-control input-lg"></select></h2>
@@ -49,7 +49,7 @@
                         key: true,
                         create: false,
                         edit: false,
-                        list: true,
+                        list: false,
                     },
                     PageName: {
                         title: '頁面名稱',
@@ -81,13 +81,12 @@
                         sorting: false //This column is not sortable!
                     },
                     UpdateDateTime: {
-                        title: '更新時間',
+                        title: '更新日期',
                         width: '15%',
-                        type: 'date',
-                        displayFormat: 'yy-mm-dd mm:dd:ss',
-                        create: false,
-                        edit: false,
-                        sorting: false //This column is not sortable!
+                        sorting: false,
+                        display: function (data) {
+                            return moment(data.record.DateAdded).format('YYYY/MM/DD HH:mm:ss');
+                        }
                     },
                     CreateUserID: {
                         create: true,
@@ -114,7 +113,7 @@
                     Other: {
                         title: '編輯網頁版型',
                         display: function (data) {
-                            return '<a href="http://192.168.1.109/MTALayoutit/index.html?pageid="'+data.record.PageId+'">編輯版型</a>';
+                            return "<a target='_blank' href='http://192.168.1.109/MTALayoutit/index.html?pageid="+data.record.PageId+">編輯版型</a>";
                         },
                         create: false,
                         edit: false
