@@ -4,6 +4,8 @@ using System;
 /// <summary>
 /// TenantsPage 的摘要描述
 /// </summary>
+
+[Serializable]
 public class TenantsPage
 {
     public TenantsPage()

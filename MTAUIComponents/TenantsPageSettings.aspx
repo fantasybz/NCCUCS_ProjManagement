@@ -8,14 +8,17 @@
     <script src="../js/moment.min.js"></script>
 
     <style type="text/css">
-        div.jtable-main-container{
-            font-size:15px !important;
+        div.jtable-main-container {
+            font-size: 15px !important;
         }
 
-        #refreshTenantsPageGrid{
-            margin-bottom :5px;
+        #refreshTenantsPageGrid {
+            margin-bottom: 5px;
         }
 
+        .view_tp_href{
+            color:white !important;
+        }
     </style>
 
     <h1 id="hTname"></h1>
@@ -39,7 +42,7 @@
             configSelectChangeAction();
 
             $("#refreshTenantsPageGrid").click(function () {
-                
+
                 refreshTenantsPageGrid();
             });
 
@@ -57,10 +60,10 @@
                     updateAction: '/MTAUIStudio/MTAUIComponents/TenantsPageSettings.aspx/UpdateTenantsPage',
                     deleteAction: '/MTAUIStudio/MTAUIComponents/TenantsPageSettings.aspx/DeleteTenantsPage'
                     //本機測試版
-                   // listAction: '/MTAUIComponents/TenantsPageSettings.aspx/TenantsPageList',
-                   //createAction: '/MTAUIComponents/TenantsPageSettings.aspx/CreateTenantsPage',
-                   //updateAction: '/MTAUIComponents/TenantsPageSettings.aspx/UpdateTenantsPage',
-                   //deleteAction: '/MTAUIComponents/TenantsPageSettings.aspx/DeleteTenantsPage'
+                    // listAction: '/MTAUIComponents/TenantsPageSettings.aspx/TenantsPageList',
+                    //createAction: '/MTAUIComponents/TenantsPageSettings.aspx/CreateTenantsPage',
+                    //updateAction: '/MTAUIComponents/TenantsPageSettings.aspx/UpdateTenantsPage',
+                    //deleteAction: '/MTAUIComponents/TenantsPageSettings.aspx/DeleteTenantsPage'
                 },
                 fields: {
                     PageId: {
@@ -79,10 +82,21 @@
                         options: { '0': '系統樣版', '1': '自建樣版' }
                     },
                     PhysicalFileName: {
-                        title:'頁面檔名(路徑)',
+                        title: '頁面檔名(路徑)',
+                        width: '25%',
                         create: false,
                         edit: false,
-                        list: true
+                        list: true,
+                        display: function (data) {
+                            if (_.isNull(data.record.PhysicalFileName)) {
+                                return '<span class="label label-danger ">尚未設定網頁框架</span>';
+
+                            } else {
+                                return '<span class="label label-success "><a class="view_tp_href" target="_blank" href="../MTAUIPage/' + data.record.TenantId + '/' + data.record.PhysicalFileName + '">檢視網頁(' + data.record.PhysicalFileName + ')</a></span>';
+
+                            }
+
+                        }
                     },
                     FileContent: {
                         create: false,
@@ -94,7 +108,7 @@
                         width: '15%',
                         create: false,
                         sorting: false,
-                        edit:false,
+                        edit: false,
                         display: function (data) {
                             return moment(data.record.CreateDateTime).format('YYYY/MM/DD HH:mm:ss');
                         }
@@ -145,7 +159,7 @@
                 }
             });
 
-          
+
 
             refreshTenantsPageGrid();
 
