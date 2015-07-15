@@ -16,25 +16,25 @@ public partial class MTAUIComponents_TenantsPageSettings : System.Web.UI.Page
     [WebMethod]
     public static object TenantsPageList(int TenantId)
     {
-        return TenantsPageService.TenantsPageListByTenantId(TenantId);
+        return TenantsPageJTableCRUDService.TenantsPageListByTenantId(TenantId);
     }
 
     [WebMethod]
     public static object CreateTenantsPage(TenantsPage record)
     {
-        return TenantsPageService.CreateTenantsPage(record);
+        return TenantsPageJTableCRUDService.CreateTenantsPage(record);
     }
 
     [WebMethod]
     public static object UpdateTenantsPage(TenantsPage record)
     {
         record.UpdateDateTime = DateTime.Now;
-        return TenantsPageService.UpdateTenantsPage(record);
+        return TenantsPageJTableCRUDService.UpdateTenantsPage(record);
     }
 
     [WebMethod]
     public static object DeleteTenantsPage(int PageId)
     {
-        return TenantsPageService.DeleteTenantsPage(PageId);
+        return TenantsPageJTableCRUDService.DeleteTenantsPage(PageId);
     }
 }

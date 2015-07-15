@@ -6,7 +6,7 @@ using System.Web;
 /// <summary>
 /// TenantsPageService 的摘要描述
 /// </summary>
-public static class TenantsPageService
+public static class TenantsPageJTableCRUDService
 {
 
 
