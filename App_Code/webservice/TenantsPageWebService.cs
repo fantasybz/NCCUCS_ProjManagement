@@ -28,10 +28,17 @@ public class TenantsPageWebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public String getTenantsPageByPageId(int pageId)
+    public String getTenantsPageJSONByPageId(int pageId)
     {
         tenantspage efTP = tps.getTenantsPageByPageId(pageId);
         return JSONSerializer.Serialize(new TenantsPage(efTP));
+    }
+
+    [WebMethod]
+    public TenantsPage getTenantsPageByPageId(int pageId)
+    {
+        tenantspage efTP = tps.getTenantsPageByPageId(pageId);
+        return new TenantsPage(efTP);
     }
 
     [WebMethod]
