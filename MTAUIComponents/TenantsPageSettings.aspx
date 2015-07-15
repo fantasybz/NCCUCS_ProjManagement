@@ -92,6 +92,7 @@
                     CreateDateTime: {
                         title: '新增日期',
                         width: '15%',
+                        create: false,
                         sorting: false,
                         edit:false,
                         display: function (data) {
@@ -101,6 +102,7 @@
                     UpdateDateTime: {
                         title: '更新時間',
                         width: '15%',
+                        create: false,
                         edit: false,
                         sorting: false,
                         display: function (data) {
