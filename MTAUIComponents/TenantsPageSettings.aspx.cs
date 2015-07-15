@@ -28,6 +28,7 @@ public partial class MTAUIComponents_TenantsPageSettings : System.Web.UI.Page
     [WebMethod]
     public static object UpdateTenantsPage(TenantsPage record)
     {
+        record.UpdateDateTime = DateTime.Now;
         return TenantsPageService.UpdateTenantsPage(record);
     }
 

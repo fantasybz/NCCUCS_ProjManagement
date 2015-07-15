@@ -6,6 +6,14 @@
     <script src="../assets/jtable.2.4.0/jquery.jtable.js"></script>
     <script src="../assets/jtable.2.4.0/extensions/jquery.jtable.aspnetpagemethods.js"></script>
     <script src="../js/moment.min.js"></script>
+
+    <style type="text/css">
+        div.jtable-main-container{
+            font-size:15px !important;
+        }
+
+    </style>
+
     <h1 id="hTname"></h1>
 
     <h2>請選擇多租戶使用者:<select id="tenant-user-select" class="form-control input-lg"></select></h2>
@@ -72,17 +80,18 @@
                         list: false
                     },
                     CreateDateTime: {
+                        title: '新增日期',
                         width: '15%',
-                        type: 'date',
-                        displayFormat: 'yy-mm-dd',
-                        list: false,
-                        create: false,
-                        edit: false,
-                        sorting: false //This column is not sortable!
+                        sorting: false,
+                        edit:false,
+                        display: function (data) {
+                            return moment(data.record.CreateDateTime).format('YYYY/MM/DD HH:mm:ss');
+                        }
                     },
                     UpdateDateTime: {
-                        title: '更新日期',
+                        title: '更新時間',
                         width: '15%',
+                        edit: false,
                         sorting: false,
                         display: function (data) {
                             return moment(data.record.UpdateDateTime).format('YYYY/MM/DD HH:mm:ss');
@@ -113,7 +122,8 @@
                     Other: {
                         title: '編輯網頁版型',
                         display: function (data) {
-                            return "<a target='_blank' href='http://192.168.1.109/MTALayoutit/index.html?pageid="+data.record.PageId+">編輯版型</a>";
+                            var layouturl = 'http:\/\/192.168.1.109\/MTALayoutit\/index.html?';
+                            return '<a target="_blank" href="' + layouturl + 'pageid=' + data.record.PageId + '">編輯版型</a>';
                         },
                         create: false,
                         edit: false
