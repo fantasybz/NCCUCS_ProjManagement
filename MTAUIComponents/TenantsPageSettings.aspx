@@ -33,10 +33,16 @@
             $('#TenantsPageTableContainer').jtable({
                 title: '多租戶客製化頁面列表',
                 actions: {
+                    //線上測試版
                     listAction: '/MTAUIStudio/MTAUIComponents/TenantsPageSettings.aspx/TenantsPageList',
-                    createAction: '/MTAUIComponents/TenantsPageSettings.aspx/CreateTenantsPage',
-                    updateAction: '/MTAUIComponents/TenantsPageSettings.aspx/UpdateTenantsPage',
-                    deleteAction: '/MTAUIComponents/TenantsPageSettings.aspx/DeleteTenantsPage'
+                    createAction: '/MTAUIStudio/MTAUIComponents/TenantsPageSettings.aspx/CreateTenantsPage',
+                    updateAction: '/MTAUIStudio/MTAUIComponents/TenantsPageSettings.aspx/UpdateTenantsPage',
+                    deleteAction: '/MTAUIStudio/MTAUIComponents/TenantsPageSettings.aspx/DeleteTenantsPage'
+                    //本機測試版
+                   // listAction: '/MTAUIComponents/TenantsPageSettings.aspx/TenantsPageList',
+                   //createAction: '/MTAUIComponents/TenantsPageSettings.aspx/CreateTenantsPage',
+                   //updateAction: '/MTAUIComponents/TenantsPageSettings.aspx/UpdateTenantsPage',
+                   //deleteAction: '/MTAUIComponents/TenantsPageSettings.aspx/DeleteTenantsPage'
                 },
                 fields: {
                     PageId: {
@@ -78,7 +84,7 @@
                         title: '更新時間',
                         width: '15%',
                         type: 'date',
-                        displayFormat: 'yy-mm-dd',
+                        displayFormat: 'yy-mm-dd mm:dd:ss',
                         create: false,
                         edit: false,
                         sorting: false //This column is not sortable!
