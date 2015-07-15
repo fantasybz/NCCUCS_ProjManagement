@@ -12,6 +12,10 @@
             font-size:15px !important;
         }
 
+        #refreshTenantsPageGrid{
+            margin-bottom :5px;
+        }
+
     </style>
 
     <h1 id="hTname"></h1>
@@ -21,7 +25,7 @@
     <asp:HiddenField ID="hid_tenant_id" runat="server" />
     <asp:HiddenField ID="hid_user_id" runat="server" />
 
-    <button id="refreshTenantsPageGrid" class="btn btn-success"><span class="glyphicon glyphicon-refresh">更新客製化頁面列表</span></button>
+    <div id="refreshTenantsPageGrid" class="btn btn-success"><span class="glyphicon glyphicon-refresh">更新客製化頁面列表</span></div>
     <div id="TenantsPageTableContainer"></div>
 
     <script type="text/javascript">
@@ -35,7 +39,7 @@
             configSelectChangeAction();
 
             $("#refreshTenantsPageGrid").click(function () {
-
+                
                 refreshTenantsPageGrid();
             });
 
