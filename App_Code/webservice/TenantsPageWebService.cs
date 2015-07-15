@@ -42,14 +42,14 @@ public class TenantsPageWebService : System.Web.Services.WebService
     }
 
     [WebMethod]
-    public String updateTenantsPageFileContent(int pageId, string fileContent)
+    public String updateTenantsPageFileContent(int pageId, string fileContent,string layoutitContent)
     {
         string appPath = HttpContext.Current.Request.ApplicationPath;
         string physicalPath = HttpContext.Current.Request.MapPath(appPath);
 
         string MTAPageRoot = physicalPath + Resources.Resource.MTAUIPageDir;
        
-        WSResultObj wsro = tps.updateTenantsPageFileContent(MTAPageRoot, pageId, fileContent);
+        WSResultObj wsro = tps.updateTenantsPageFileContent(MTAPageRoot, pageId, fileContent,layoutitContent);
 
         return JSONSerializer.Serialize(wsro);
     }

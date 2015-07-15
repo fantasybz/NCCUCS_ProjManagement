@@ -27,18 +27,20 @@ public class TenantsPageService
 
     }
 
-    public WSResultObj updateTenantsPageFileContent(string MTAPageRoot, int pageId, string fileContent)
+    public WSResultObj updateTenantsPageFileContent(string MTAPageRoot, int pageId, string fileContent,string layoutitContent)
     {
 
         try
         {
             tenantspage efTP = getTenantsPageByPageId(pageId);
             efTP.FileContent = fileContent;
+            efTP.LayoutitContent = layoutitContent;
             efTP.PhysicalFileName = getTenantsPageFileName(efTP);
             efTP.UpdateDateTime = DateTime.Now;
             utbEF.SaveChanges();
 
-            configPhyicalFilePage(MTAPageRoot, efTP);
+            configPhysicalFilePage(MTAPageRoot, efTP);
+
             return new WSResultObj { Result = "OK" };
         }
         catch (Exception ex)
@@ -49,7 +51,7 @@ public class TenantsPageService
 
     }
 
-    public void configPhyicalFilePage(string MTAPageRoot, tenantspage tp)
+    public void configPhysicalFilePage(string MTAPageRoot, tenantspage tp)
     {
 
         string directoryPath = getMTATenantsDir(MTAPageRoot, tp);

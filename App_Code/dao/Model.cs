@@ -23,5 +23,6 @@ namespace dao
         public Nullable<System.DateTime> CreateDateTime { get; set; }
         public Nullable<System.DateTime> UpdateDateTime { get; set; }
         public int CreateUserID { get; set; }
+        public string LayoutitContent { get; set; }
     }
 }

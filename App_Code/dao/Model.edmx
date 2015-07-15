@@ -18,6 +18,7 @@
           <Property Name="CreateDateTime" Type="datetime" Precision="0" />
           <Property Name="UpdateDateTime" Type="datetime" Precision="0" />
           <Property Name="CreateUserID" Type="int" Nullable="false" />
+          <Property Name="LayoutitContent" Type="text" />
         </EntityType>
         <EntityContainer Name="utbModelStoreContainer">
           <EntitySet Name="tenantspage" EntityType="Self.tenantspage" Schema="utb" store:Type="Tables" />
@@ -42,6 +43,7 @@
           <Property Name="CreateDateTime" Type="DateTime" />
           <Property Name="UpdateDateTime" Type="DateTime" />
           <Property Name="CreateUserID" Type="Int32" Nullable="false" />
+          <Property Name="LayoutitContent" Type="String" MaxLength="65535" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -52,6 +54,7 @@
           <EntitySetMapping Name="tenantspage">
             <EntityTypeMapping TypeName="utbModel.tenantspage">
               <MappingFragment StoreEntitySet="tenantspage">
+                <ScalarProperty Name="LayoutitContent" ColumnName="LayoutitContent" />
                 <ScalarProperty Name="CreateUserID" ColumnName="CreateUserID" />
                 <ScalarProperty Name="UpdateDateTime" ColumnName="UpdateDateTime" />
                 <ScalarProperty Name="CreateDateTime" ColumnName="CreateDateTime" />

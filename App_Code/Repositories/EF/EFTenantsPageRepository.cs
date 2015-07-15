@@ -31,6 +31,7 @@ public class EFTenantsPageRepository : ITenantsPageRepository
                      CreateDateTime = (DateTime)tp.CreateDateTime,
                      CreateUserID = (int)tp.CreateUserID,
                      FileContent = tp.FileContent,
+                     LayoutitContent = tp.LayoutitContent
                  }).ToList<TenantsPage>();
 
         return q;
@@ -47,6 +48,7 @@ public class EFTenantsPageRepository : ITenantsPageRepository
         efTP.CreateUserID = _tp.CreateUserID;
         efTP.CreateDateTime = _tp.CreateDateTime;
         efTP.FileContent = _tp.FileContent;
+        efTP.LayoutitContent = _tp.LayoutitContent;
 
         _datasource.tenantspage.Add(efTP);
         _datasource.SaveChanges();
@@ -67,6 +69,7 @@ public class EFTenantsPageRepository : ITenantsPageRepository
             efTP.UpdateDateTime = _tp.UpdateDateTime;
             efTP.CreateUserID = _tp.CreateUserID;
             efTP.FileContent = _tp.FileContent;
+            efTP.LayoutitContent = _tp.LayoutitContent;
 
             _datasource.SaveChanges();
         }

@@ -26,6 +26,7 @@ public class TenantsPage
         this.CreateDateTime = (DateTime)tp.CreateDateTime;
         this.CreateUserID = (int)tp.CreateUserID;
         this.FileContent = tp.FileContent;
+        this.LayoutitContent = tp.LayoutitContent;
 
     }
 
@@ -40,6 +41,9 @@ public class TenantsPage
     public String PhysicalFileName { get; set; }
 
     public String FileContent { get; set; }
+
+    public String LayoutitContent { get; set; }
+
 
     public DateTime CreateDateTime { get; set; }
 

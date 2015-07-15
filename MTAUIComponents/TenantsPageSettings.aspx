@@ -103,6 +103,11 @@
                         edit: false,
                         list: false
                     },
+                    LayoutitContent: {
+                        create: false,
+                        edit: false,
+                        list: false
+                    },
                     CreateDateTime: {
                         title: '新增日期',
                         width: '15%',
