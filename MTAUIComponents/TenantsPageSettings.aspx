@@ -33,7 +33,7 @@
             $('#TenantsPageTableContainer').jtable({
                 title: '多租戶客製化頁面列表',
                 actions: {
-                    listAction: '/MTAUIComponents/TenantsPageSettings.aspx/TenantsPageList',
+                    listAction: '/MTAUIStudio/MTAUIComponents/TenantsPageSettings.aspx/TenantsPageList',
                     createAction: '/MTAUIComponents/TenantsPageSettings.aspx/CreateTenantsPage',
                     updateAction: '/MTAUIComponents/TenantsPageSettings.aspx/UpdateTenantsPage',
                     deleteAction: '/MTAUIComponents/TenantsPageSettings.aspx/DeleteTenantsPage'
@@ -44,9 +44,6 @@
                         create: false,
                         edit: false,
                         list: true,
-                        display: function (data) {
-                            return '<b>test</b>';
-                        }
                     },
                     PageName: {
                         title: '頁面名稱',
@@ -58,6 +55,7 @@
                         options: { '0': '系統樣版', '1': '自建樣版' }
                     },
                     PhysicalFileName: {
+                        title:'頁面檔名(路徑)',
                         create: false,
                         edit: false,
                         list: true
@@ -68,16 +66,16 @@
                         list: false
                     },
                     CreateDateTime: {
-                        title: 'CreateDateTime',
                         width: '15%',
                         type: 'date',
                         displayFormat: 'yy-mm-dd',
+                        list: false,
                         create: false,
                         edit: false,
                         sorting: false //This column is not sortable!
                     },
                     UpdateDateTime: {
-                        title: 'CreateDateTime',
+                        title: '更新時間',
                         width: '15%',
                         type: 'date',
                         displayFormat: 'yy-mm-dd',
@@ -108,9 +106,9 @@
                         }
                     },
                     Other: {
-                        title: 'Other',
+                        title: '編輯網頁版型',
                         display: function (data) {
-                            return '<b>test</b>';
+                            return '<a href="http://192.168.1.109/MTALayoutit/index.html?pageid="'+data.record.PageId+'">編輯版型</a>';
                         },
                         create: false,
                         edit: false
