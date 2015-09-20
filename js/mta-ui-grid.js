@@ -5,7 +5,7 @@
 
 (function () {
 
-    var MTAServiceURL = 'http://192.168.1.109:8080/MTAServiceResful/';
+    var MTAServiceURL = 'http://192.168.1.103:8080/MTAServiceResful/';
 
     function setRelationValue(field) {
 
