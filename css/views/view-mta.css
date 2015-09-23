@@ -1,11 +1,20 @@
-.mta-ui-show{
+.mta-ui-show {
     display: none;
 }
 
-.mta-settings{
+.mta-settings {
     display: none;
 }
 
-.gridster{
+.gridster {
     display: none;
+}
+
+.mta-editor fieldset {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    min-height: 200px;
+    padding: 5px;
+    padding-bottom: 30px;
 }

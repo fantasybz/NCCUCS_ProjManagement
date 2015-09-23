@@ -1,336 +1,77 @@
-<!DOCTYPE html><html><head lang="en">    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">            <title></title>        <!-- Le styles -->        <link href="../css/views/bootstrap-combined.min.css" rel="stylesheet">            <link href="../css/views/jquery-ui-1.10.3.custom.css" rel="stylesheet">                <link href="../assets/jqGrid/css/ui.jqgrid.css" rel="stylesheet">                    <link href="../css/views/view-mta.css" rel="stylesheet">                        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->                        <!--[if lt IE 9]>                        <script src="../js/views/html5shiv.js"></script>                        <![endif]-->                        <!-- Fav and touch icons -->                        <link rel="shortcut icon" href="img/favicon.png">                            <script src="../js/angular.min.js"></script>                            <script type="text/javascript" src="../js/views/jquery-2.0.0.min.js"></script>                            <!--[if lt IE 9]>                            <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>                            <![endif]-->                            <script type="text/javascript" src="../js/views/bootstrap.min.js"></script>                            <script type="text/javascript" src="../js/views/jquery-ui.js"></script>                            <script type="text/javascript" src="../js/views/jquery.ui.touch-punch.min.js"></script>                            <script type="text/javascript" src="../js/views/jquery.htmlClean.js"></script>                            <script src="../assets/jqGrid/js/i18n/grid.locale-en.js"></script>                            <script src="../assets/jqGrid/js/jquery.jqGrid.min.js"></script>                            <script type="text/javascript" src="../ckeditor/ckeditor.js"></script>                            <script type="text/javascript" src="../ckeditor/config.js"></script>                            <script src="../js/underscore.js"></script>                            <script src="../js/encoder.js"></script>                            <script src="../js/ajaxq.js"></script>                            <script src="../js/mta-ui-grid.js"></script>                        </head>                        <body ng-app="MTAUIDirective">                            <div ng-controller="Controller"><div class="container-fluid">
-<div class="row-fluid">
-<div class="span12">
-<div class="MTA-GRID">
-    <div class="mta-settings">
-        <span class="label label-success mta-type">MTA-GRID</span> <span class="label mta-userinfo">Tenant1 A單位(自行研發專案)</span> <span class="label">請選擇Domain Object:</span> <select class="form-control mta-object-select"><option value="-1">請選擇</option><option value="1">Project</option><option value="3">Requirement</option><option value="22">SoftwareDesignDocument</option><option value="23">SoftwareTestPlan</option><option value="42">Vendor</option></select><input type="hidden" class="mta-selected-objid" value="3" /><input type="hidden" class="mta-cols-positions" value="[{&quot;col&quot;:1,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;" />|||
-        <mtafield>
-            ReqId
-        </mtafield>&quot;},{&quot;col&quot;:2,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            ProjectId
-        </mtafield>&quot;},{&quot;col&quot;:3,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            ReqType
-        </mtafield>&quot;},{&quot;col&quot;:4,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            ReqDescription
-        </mtafield>&quot;},{&quot;col&quot;:5,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            ReqFuncFlag
-        </mtafield>&quot;},{&quot;col&quot;:6,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            ReqRemark
-        </mtafield>&quot;},{&quot;col&quot;:7,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            ReqCode
-        </mtafield>&quot;},{&quot;col&quot;:1,&quot;row&quot;:2,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            Priority
-        </mtafield>&quot;}]">
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>        <!-- Le styles -->
+    <link href="../css/views/bootstrap-combined.min.css" rel="stylesheet">
+    <link href="../css/views/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+    <link href="../assets/jqGrid/css/ui.jqgrid.css" rel="stylesheet">
+    <link href="../css/views/view-mta.css" rel="stylesheet">                        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->                        <!--[if lt IE 9]>                        <script src="../js/views/html5shiv.js"></script>                        <![endif]-->                        <!-- Fav and touch icons -->
+    <link rel="shortcut icon" href="img/favicon.png">
+    <script src="../js/angular.min.js"></script>
+    <script type="text/javascript" src="../js/views/jquery-2.0.0.min.js"></script>                            <!--[if lt IE 9]>                            <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>                            <![endif]-->
+    <script type="text/javascript" src="../js/views/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../js/views/jquery-ui.js"></script>
+    <script type="text/javascript" src="../js/views/jquery.ui.touch-punch.min.js"></script>
+    <script type="text/javascript" src="../js/views/jquery.htmlClean.js"></script>
+    <script src="../assets/jqGrid/js/i18n/grid.locale-en.js"></script>
+    <script src="../assets/jqGrid/js/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="../ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="../ckeditor/config.js"></script>
+    <script src="../js/underscore.js"></script>
+    <script src="../js/encoder.js"></script>
+    <script src="../js/ajaxq.js"></script>
+    <script src="../js/mta-ui-grid.js"></script>
+</head>
+<body ng-app="MTAUIDirective">
+    <div ng-controller="Controller">
+        <div class="container-fluid">
+            <mta-grid objectid="3" cols="['ReqId','ProjectId','ReqType','ReqDescription','ReqFuncFlag','ReqRemark','ReqCode','Priority']" tenantid="1">
+            </mta-grid>
+            <mta-editor objectid="3" cols="['ReqId','ProjectId','ReqType','ReqDescription','ReqFuncFlag','ReqRemark','ReqCode','Priority']" tenantid="1">
+            </mta-editor>
+
+            <div class="mta-editor">
+                <form class="form-horizontal">
+                    <fieldset>
+
+                        <!-- Form Name -->
+                        <legend>KOCHI</legend>
+
+                        <!-- Text input-->
+                        <div class="control-group">
+                            <label class="control-label" for="textinput-0">Text Input</label>
+                            <div class="controls">
+                                <input id="textinput-0" name="textinput-0" type="text" placeholder="placeholder" class="input-xlarge">
+                                <p class="help-block">help</p>
+                            </div>
+                        </div>
+
+                        <!-- Text input-->
+                        <div class="control-group">
+                            <label class="control-label" for="textinput-1">Text Input</label>
+                            <div class="controls">
+                                <input id="textinput-1" name="textinput-1" type="text" placeholder="placeholder" class="input-xlarge">
+                                <p class="help-block">help</p>
+                            </div>
+                        </div>
+
+                        <!-- Password input-->
+                        <div class="control-group">
+                            <label class="control-label" for="passwordinput-0">Password Input</label>
+                            <div class="controls">
+                                <input id="passwordinput-0" name="passwordinput-0" type="password" placeholder="placeholder" class="input-xlarge">
+                                <p class="help-block">help</p>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </form>
+            </div>
+
+        </div>
     </div>
-    <div class="mta-ui-show">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>
-                    column1
-                </th>
-                <th>
-                    column2
-                </th>
-                <th>
-                    column3
-                </th>
-                <th>
-                    column4
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    1
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    2
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    3
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    4
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="gridster ready">
-        <ul>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    ReqId
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    ProjectId
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    ReqType
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    ReqDescription
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    ReqFuncFlag
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    ReqRemark
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    ReqCode
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    Priority
-                </mtafield>
-            </li>
-        </ul>
-    </div>
-    <div class="mta-ui-code">
-        <mta-grid objectid="3" cols="['ReqId','ProjectId','ReqType','ReqDescription','ReqFuncFlag','ReqRemark','ReqCode','Priority']" tenantid="1">
-        </mta-grid>
-    </div>
-</div>
-<div class="MTA-GRID">
-    <div class="mta-settings">
-        <span class="label label-success mta-type">MTA-GRID</span> <span class="label mta-userinfo">Tenant1 A單位(自行研發專案)</span> <span class="label">請選擇Domain Object:</span> <select class="form-control mta-object-select"><option value="-1">請選擇</option><option value="1">Project</option><option value="3">Requirement</option><option value="22">SoftwareDesignDocument</option><option value="23">SoftwareTestPlan</option><option value="42">Vendor</option></select><input type="hidden" class="mta-selected-objid" value="42" /><input type="hidden" class="mta-cols-positions" value="[{&quot;col&quot;:1,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;" />|||
-        <mtafield>
-            VendorId
-        </mtafield>&quot;},{&quot;col&quot;:3,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            Name
-        </mtafield>&quot;},{&quot;col&quot;:2,&quot;row&quot;:1,&quot;size_x&quot;:1,&quot;size_y&quot;:1,&quot;data&quot;:&quot;
-        <header>
-            |||
-        </header>
-        <mtafield>
-            Vendor_Project
-        </mtafield>&quot;}]">
-    </div>
-    <div class="mta-ui-show">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>
-                    column1
-                </th>
-                <th>
-                    column2
-                </th>
-                <th>
-                    column3
-                </th>
-                <th>
-                    column4
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    1
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    2
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    3
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    4
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-                <td>
-                    ........
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="gridster ready">
-        <ul>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    VendorId
-                </mtafield>
-            </li>
-            <li class="gs-w">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    Name
-                </mtafield>
-            </li>
-            <li class="gs-w player-revert">
-                <header>
-                    |||
-                </header>
-                <mtafield>
-                    Vendor_Project
-                </mtafield>
-            </li>
-        </ul>
-    </div>
-    <div class="mta-ui-code">
-        <mta-grid objectid="42" cols="['VendorId','Name','Vendor_Project']" tenantid="1">
-        </mta-grid>
-    </div>
-</div>
-</div>
-</div>
-</div></div></div></body></html>
+</body>
+</html>

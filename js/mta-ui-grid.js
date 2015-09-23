@@ -5,7 +5,7 @@
 
 (function () {
 
-    var MTAServiceURL = 'http://192.168.1.103:8080/MTAServiceResful/';
+    var MTAServiceURL = 'http://192.168.1.111:8080/MTAServiceResful/';
 
     function setRelationValue(field) {
 
@@ -21,7 +21,7 @@
 
     function loadCustomObjects(objclass, tenantId, objectId) {
 
-        var olistUrl = MTAServiceURL+'colist?tid=' + tenantId + "&oid=" + objectId;
+        var olistUrl = MTAServiceURL + 'colist?tid=' + tenantId + "&oid=" + objectId;
 
 
         $.ajaxq("MTAQueue", {
@@ -279,5 +279,39 @@
                 }
 
             };
+        })
+        .directive('mtaEditor', function (MtaDataLayer) {
+            return {
+                restrict: 'E',
+                replace: true,
+
+                compile: function (tElem, tAttrs) {
+                    console.log(name + ': compile => ' + tElem.html());
+                    return {
+                        pre: function (scope, iElem, iAttrs) {
+                            console.log(name + ': pre link => ' + iElem.html());
+                            var id = setGridCrlID();
+
+                            angular.element(iElem).append("<table id=" + id + " class='mtagrid'></table>");
+
+                            MtaDataLayer.getMTAObjMeta(iAttrs.tenantid, iAttrs.objectid, JSON.parse(iAttrs.cols.replace(/'+/g, '"')), function (data) {
+
+                                setjqGrid("#" + id, data);
+
+                                loadCustomObjects("#" + id, iAttrs.tenantid, iAttrs.objectid);
+
+
+                            });
+
+
+                        },
+                        post: function (scope, iElem, iAttrs) {
+                            console.log(name + ': post link => ' + iElem.html());
+                        }
+                    }
+                }
+
+            };
+
         });
 })();
