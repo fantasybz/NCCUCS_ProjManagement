@@ -33,7 +33,7 @@
 
     <script type="text/javascript">
 
-        var MTAServiceURL = 'http://192.168.1.111:8080/MTAServiceResful/';
+        var MTAServiceURL = 'http://192.168.1.103:8080/MTAServiceResful/';
 
         $(function () {
 
@@ -153,7 +153,7 @@
                     Other: {
                         title: '編輯網頁版型',
                         display: function (data) {
-                            var layouturl = 'http:\/\/192.168.1.111\/MTALayoutit\/MTALayoutitPage.aspx?';
+                            var layouturl = 'http:\/\/192.168.1.103\/MTALayoutit\/MTALayoutitPage.aspx?';
                             return '<a target="_blank" href="' + layouturl + 'pageid=' + data.record.PageId + '">編輯版型</a>';
                         },
                         create: false,
